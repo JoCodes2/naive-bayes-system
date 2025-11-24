@@ -23,8 +23,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('assets/assets/logonaivebayes.png') }}" />
-
     @include('Layouts.Styles')
+    <script>
+        let appUrl = '{{ env('APP_URL') }}';
+    </script>
   </head>
 
   <body>
