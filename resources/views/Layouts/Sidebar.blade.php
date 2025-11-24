@@ -28,9 +28,12 @@
                         <div data-i18n="Analytics">Pengguna</div>
                     </a>
                 </li>
-
-
-
+                <li class="menu-item {{ request()->is('gejala') ? 'active' : '' }}">
+                    <a href="/gejala" class="menu-link">
+                        <i class="menu-icon fa-solid fa-virus"></i>
+                        <div data-i18n="Analytics">Gejala Penyakit</div>
+                    </a>
+                </li>
             </ul>
         </aside>
         <!-- / Menu -->

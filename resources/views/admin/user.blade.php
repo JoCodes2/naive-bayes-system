@@ -30,36 +30,36 @@
 
         </div>
 
-        {{-- Modal --}}
-        <div class="modal fade" id="DataModalPengguna" tabindex="-1" aria-labelledby="DataModalLabelPengguna"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="DataModalLabelPosition">Position</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="userForm" method="POST">
-                            @csrf
-                            <input type="hidden" id="id" name="id">
-                            <div class="form-group">
-                                <label for="name">Nama</label>
-                                <input type="text" class="form-control" name="name" id="name"
-                                    placeholder="Masukkan nama">
-                                <small id="name-error" class="text-danger"></small>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary" id="simpanPosition">Simpan</button>
-                    </div>
+
+
+    </div>
+    {{-- Modal --}}
+    <div class="modal fade" id="DataModalPengguna" tabindex="-1" aria-labelledby="DataModalLabelPengguna"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DataModalLabelPosition">Position</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm" method="POST">
+                        @csrf
+                        <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+                            <label for="name">Nama</label>
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Masukkan nama">
+                            <small id="name-error" class="text-danger"></small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="simpanPosition">Simpan</button>
                 </div>
             </div>
         </div>
-
-
     </div>
 @endsection
 
