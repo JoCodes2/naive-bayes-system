@@ -34,6 +34,18 @@
                         <div data-i18n="Analytics">Gejala Penyakit</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('penyakit') ? 'active' : '' }}">
+                    <a href="/penyakit" class="menu-link">
+                        <i class="menu-icon fa-solid fa-disease"></i>
+                        <div data-i18n="Analytics">Penyakit</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('perawatan') ? 'active' : '' }}">
+                    <a href="/perawatan" class="menu-link">
+                        <i class="menu-icon fa-solid fa-hand-holding-medical"></i>
+                        <div data-i18n="Analytics">Perawatan</div>
+                    </a>
+                </li>
             </ul>
         </aside>
         <!-- / Menu -->
