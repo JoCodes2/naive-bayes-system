@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class GejalaRequest extends FormRequest
+class RekomendasiPencegahanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class GejalaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => 'required',
+            'judul' => 'required',
+            'deskripsi' => 'required',
         ];
     }
     protected function failedValidation(Validator $validator)
