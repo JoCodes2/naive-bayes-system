@@ -1,4 +1,4 @@
-<table id="{{ $initId }}" class="table table-bordered table-striped">
+<table id="{{ $initId }}" class="table table-borderless">
     <thead>
         <tr>
             @foreach($columns as $col)

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CMS\GejalaController;
 use App\Http\Controllers\CMS\PenyakitController;
 use App\Http\Controllers\CMS\PerawatanController;
+use App\Http\Controllers\CMS\RekomendasiController;
 use Illuminate\Support\Facades\Route;
 
 //admin/view
@@ -20,6 +21,9 @@ Route::get('/perawatan', function () {
 Route::get('/gejala', function () {
     return view('pages.gejala');
 });
+Route::get('/rekomendasi', function () {
+    return view('pages.rekomendasipencegahan');
+});
 
 
 
@@ -28,6 +32,13 @@ Route::get('/gejala', function () {
 Route::prefix('naive-bayes')->group(function () {
 
     Route::prefix('gejala')->controller(GejalaController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+    Route::prefix('rekomendasi')->controller(RekomendasiController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
         Route::get('/get/{id}', 'getDataById');

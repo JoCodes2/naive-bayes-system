@@ -3,17 +3,17 @@
 @section('content')
     {{-- Header --}}
 <x-base-header
-    title="Data Gejala"
+    title="Rekomendasi Pencegahan"
     icon="fa-solid fa-virus"
 />
     {{-- Body --}}
     <x-base-body
-        title="Data Gejala Tanaman"
-        :button="['id' => 'btnTambahGejala', 'label' => 'Tambah Daftar Gejala',]"
+        title="Data Rekomendasi Pencegahan"
+        :button="['id' => 'btnTambahRekomendasi', 'label' => 'Tambah Daftar Rekomendasi',]"
     >
         <div class="py-0">
             {{-- Table --}}
-            <x-base-table initId="gejalaTable" :columns="['No', 'Nama Gejala', 'Deskripsi', 'Aksi']">
+            <x-base-table initId="rekomendasiTable" :columns="['No', 'Nama ', 'Deskripsi', 'Aksi']">
                 <tbody>
 
                 </tbody>
@@ -22,21 +22,21 @@
         </div>
     </x-base-body>
     <x-base-form
-        modalId="modalGejala"
-        modalLabelId="labelModalGejala"
-        title="Form Gejala"
-        formId="formGejala"
-        submitId="btnSimpanGejala"
-        submitText="Simpan Gejala"
+        modalId="modalRekomendasi"
+        modalLabelId="labelModaRekomendasi"
+        title="Form Rekomendasi"
+        formId="formRekomendasi"
+        submitId="btnSimpanRekomendasi"
+        submitText="Simpan Rekomendasi"
     >
 
         <input type="hidden" name="id" id="id" value="">
 
         <div class="form-group mb-3">
-            <label for="nama">Nama Gejala</label>
-            <input type="text" class="form-control" id="nama" name="nama"
-                placeholder="Masukkan nama gejala">
-            <small class="text-danger" id="nama-error"></small>
+            <label for="judul">Nama</label>
+            <input type="text" class="form-control" id="judul" name="judul"
+                placeholder="Input here..">
+            <small class="text-danger" id="judul-error"></small>
         </div>
 
         <div class="form-group mb-3">
@@ -49,5 +49,5 @@
     </x-base-form>
 @endsection
 @section('scripts')
-    <script type="module" src="{{ asset('js/controllers/gejala.controller.js')}}"></script>
+    <script type="module" src="{{ asset('js/controllers/rekomendasi.controller.js')}}"></script>
 @endsection
