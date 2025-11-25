@@ -1,4 +1,4 @@
-class gejalaService {
+class rekomendasiService {
     ajaxRequest(url, method, data = null) {
         return new Promise((resolve, reject) => {
             $.ajax({
@@ -14,14 +14,14 @@ class gejalaService {
     }
 
     async getAllData() {
-        if ($.fn.dataTable.isDataTable('#gejalaTable')) {
-            $('#gejalaTable').DataTable().clear().destroy();
+        if ($.fn.dataTable.isDataTable('#rekomendasiTable')) {
+            $('#rekomendasiTable').DataTable().clear().destroy();
         }
 
-        $("#gejalaTable tbody").empty();
+        $("#rekomendasiTable tbody").empty();
 
         try {
-            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/`, 'GET');
+            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/`, 'GET');
             console.log(responseData);
 
             if (responseData && responseData.data) {
@@ -32,14 +32,14 @@ class gejalaService {
                     tableBody += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${item.nama}</td>
+                        <td>${item.judul}</td>
                         <td>${item.deskripsi}</td>
                         <td class="text-center">
                            <div class="d-flex gap-2">
-                                <a href="#" class="edit-gejala" data-id="${item.id}" title="Edit">
+                                <a href="#" class="edit-rekomendasi" data-id="${item.id}" title="Edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <a href="#" class="delete-gejala" data-id="${item.id}" title="Hapus">
+                                <a href="#" class="delete-rekomendasi" data-id="${item.id}" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -48,9 +48,9 @@ class gejalaService {
                     `;
                 });
 
-                $("#gejalaTable tbody").html(tableBody);
+                $("#rekomendasiTable tbody").html(tableBody);
 
-                $('#gejalaTable').DataTable({
+                $('#rekomendasiTable').DataTable({
                     paging: true,
                     searching: true,
                     responsive: true,
@@ -67,7 +67,7 @@ class gejalaService {
     }
 
     async upsertData(form, checkingEdit) {
-        let submitButton = $('#btnSimpanGejala');
+        let submitButton = $('#btnSimpanRekomendasi');
 
         try {
             const formData = new FormData(form);
@@ -75,15 +75,15 @@ class gejalaService {
 
             if (checkingEdit()) {
                 const id = $('#id').val();
-                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/update/${id}`, 'POST', formData);
+                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/update/${id}`, 'POST', formData);
             } else {
                 submitButton.attr('disabled', true);
-                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/create`, 'POST', formData);
+                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/create`, 'POST', formData);
             }
             if (responseData.code === 200) {
                 successAlert().then(() => {
                     realoadBrowser();
-                    $('#modalGejala').modal('hide');
+                    $('#modalRekomendasi').modal('hide');
                 });
             } else {
                 warningAlert();
@@ -101,11 +101,11 @@ class gejalaService {
 
     async getDataById(id, checkingEdit) {
         try {
-            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/get/${id}`, 'GET');
+            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/get/${id}`, 'GET');
             console.log(responseData);
-            $('#modalGejala').modal('show');
+            $('#modalRekomendasi').modal('show');
             $('#id').val(responseData.data.id);
-            $('#nama').val(responseData.data.nama);
+            $('#judul').val(responseData.data.judul);
             $('#deskripsi').val(responseData.data.deskripsi);
             checkingEdit();
         } catch (error) {
@@ -117,7 +117,7 @@ class gejalaService {
         try {
             const result = await confirmDeleteAlert();
             if (result.isConfirmed) {
-                const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/delete/${id}`, 'DELETE');
+                const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/delete/${id}`, 'DELETE');
                 console.log(responseData);
                 if (responseData.code === 200) {
                     await successAlert().then(() => {
@@ -134,4 +134,4 @@ class gejalaService {
 
 }
 
-export default gejalaService;
+export default rekomendasiService;
