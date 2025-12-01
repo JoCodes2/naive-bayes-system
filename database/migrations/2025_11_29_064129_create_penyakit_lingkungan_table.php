@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penyakit', function (Blueprint $table) {
+        Schema::create('aturan_penyakit_lingkungan', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama');
-            $table->text('deskripsi')->nullable();
+            $table->foreignUuid('penyakit_id')->constrained('penyakit')->onDelete('cascade');
+            $table->foreignUuid('parameter_id')->constrained('parameter_lingkungan')->onDelete('cascade');
+            $table->string('kondisi');
+            $table->decimal('bobot_pengaruh', 3, 2)->default(0.3);
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penyakit');
+        Schema::dropIfExists('penyakit_lingkungan');
     }
 };

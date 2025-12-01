@@ -11,19 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('perawatan_penyakit', function (Blueprint $table) {
+        Schema::create('riwayat_diagnosa', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->json('kondisi_lingkungan');
+            $table->json('gejala_yang_dipilih');
             $table->foreignUuid('penyakit_id')->constrained('penyakit')->onDelete('cascade');
-            $table->foreignUuid('perawatan_id')->constrained('perawatan')->onDelete('cascade');
+            $table->decimal('tingkat_kepercayaan', 5, 2);
+            $table->text('rekomendasi_perawatan');
+            $table->text('rekomendasi_pencegahan');
+            $table->text('catatan_tambahan')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('perawatan_penyakit');
+        Schema::dropIfExists('riwayat_diagnosa');
     }
 };

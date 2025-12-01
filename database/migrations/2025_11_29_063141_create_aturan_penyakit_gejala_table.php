@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gejala_penyakit', function (Blueprint $table) {
+        Schema::create('aturan_penyakit_gejala', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('gejala_id')->constrained('gejala')->cascadeOnDelete();
-            $table->foreignUuid('penyakit_id')->constrained('penyakit')->cascadeOnDelete();
+            $table->foreignUuid('penyakit_id')->constrained('penyakit')->onDelete('cascade');
+            $table->foreignUuid('gejala_id')->constrained('gejala')->onDelete('cascade');
+            $table->decimal('bobot', 3, 2)->default(0.5);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gejala_penyakit');
+        Schema::dropIfExists('aturan_penyakit_gejala');
     }
 };

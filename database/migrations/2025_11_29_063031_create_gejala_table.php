@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gejala_diagnosa', function (Blueprint $table) {
+        Schema::create('gejala', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('gejala_id');
-            $table->uuid('diagnosa_id');
+            $table->string('kode_gejala')->unique();
+            $table->text('deskripsi_gejala');
+            $table->enum('kategori', ['akar', 'daun', 'buah', 'batang', 'umum'])->default('umum');
             $table->timestamps();
-
-            $table->foreign('gejala_id')->references('id')->on('gejala')->onDelete('cascade');
-            $table->foreign('diagnosa_id')->references('id')->on('catatan_diagnosa')->onDelete('cascade');
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gejala_diagnosa');
+        Schema::dropIfExists('gejala');
     }
 };

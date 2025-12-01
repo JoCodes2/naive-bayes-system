@@ -11,11 +11,18 @@ class GejalaModel extends Model
     use HasFactory, HasUuids;
 
     protected $table = 'gejala';
+
     protected $fillable = [
         'id',
-        'nama',
-        'deskripsi',
+        'kode_gejala',
+        'deskripsi_gejala',
+        'kategori',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
+
+    public function aturanPenyakit()
+    {
+        return $this->hasMany(AturanPenyakitGejalaModel::class, 'gejala_id');
+    }
 }

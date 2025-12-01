@@ -24,7 +24,9 @@ class GejalaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => 'required',
+            'kode_gejala' => 'required|unique:gejala,kode_gejala',
+            'deskripsi_gejala' => 'required',
+            'kategori' => 'required',
         ];
     }
     protected function failedValidation(Validator $validator)
