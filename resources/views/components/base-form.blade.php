@@ -16,16 +16,16 @@
                 <form id="{{ $formId }}" method="POST">
                     @csrf
                     {{ $slot }}   {{-- tempat isian form --}}
+                    {{-- FOOTER --}}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="{{ $submitId }}">
+                            {{ $submitText ?? 'Simpan' }}
+                        </button>
+                    </div>
                 </form>
             </div>
 
-            {{-- FOOTER --}}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="{{ $submitId }}">
-                    {{ $submitText ?? 'Simpan' }}
-                </button>
-            </div>
         </div>
     </div>
 </div>

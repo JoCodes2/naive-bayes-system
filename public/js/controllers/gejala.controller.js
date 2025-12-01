@@ -10,19 +10,21 @@ $(document).ready(function () {
         $('#id').val('');
 
         $('#formGejala .form-control').removeClass('is-valid is-invalid');
-        $('#nama-error, #deskripsi-error').text('');
+        $('#kategori-error, #deskripsi_gejala-error, #kode_gejala').text('');
 
         $('#modalGejala').modal('show');
     });
     function validation() {
         $('#formGejala').validate({
             rules: {
-                nama: { required: true },
-                deskripsi: { required: true },
+                kode_gejala: { required: true },
+                deskripsi_gejala: { required: true },
+                kategori: { required: true },
             },
             messages: {
-                nama: { required: "Form tidak boleh kosong" },
-                deskripsi: { required: "Form tidak boleh kosong" },
+                kode_gejala: { required: "Form tidak boleh kosong" },
+                deskripsi_gejala: { required: "Form tidak boleh kosong" },
+                kategori: { required: "Form tidak boleh kosong" },
             },
             highlight: function (element) {
                 $(element).addClass('is-invalid').removeClass('is-valid');
@@ -39,21 +41,19 @@ $(document).ready(function () {
 
     validation();
 
-    $('#nama, #deskripsi').on('input', function () {
+    $('#kode_gejala, #kategori, #deskripsi_gejala').on('input', function () {
         $(this).valid();
     });
+
 
     function checkingEdit() {
         return $('#id').val() ? true : false;
     }
-    $('#btnSimpanGejala').on('click', function () {
-
-        if (!$('#formGejala').valid()) {
-            return;
-        }
-        const form = $('#formGejala')[0];
-        gejalaservice.upsertData(form, checkingEdit);
+    $('#formGejala').submit(function (e) {
+        e.preventDefault();
+        gejalaservice.upsertData(e, checkingEdit);
     });
+
 
     $(document).on('click', '.edit-gejala', function () {
         const id = $(this).data('id');
