@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gejala', function (Blueprint $table) {
+        Schema::create('parameter_lingkungan', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama');
+            $table->string('nama_parameter');
+            $table->string('satuan')->nullable();
+            $table->string('kategori');
+            $table->decimal('nilai_ideal_min', 8, 2)->nullable();
+            $table->decimal('nilai_ideal_max', 8, 2)->nullable();
             $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gejala');
+        Schema::dropIfExists('parameter_lingkungan_');
     }
 };

@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('perawatan', function (Blueprint $table) {
+        Schema::create('penyakit', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nama');
-            $table->enum('jenis', ['kimia', 'organik', 'mekanis', 'pencegahan']);
-            $table->text('deskripsi')->nullable();
+            $table->string('kode_penyakit')->unique();
+            $table->string('nama_penyakit');
+            $table->text('deskripsi');
+            $table->text('solusi_perawatan');
+            $table->text('tindakan_pencegahan');
+            $table->text('faktor_risiko')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('perawatan');
+        Schema::dropIfExists('penyakit');
     }
 };
