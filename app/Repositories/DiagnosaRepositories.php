@@ -19,9 +19,6 @@ class DiagnosaRepositories implements DiagnosaInterfaces
         $this->diagnosaService = $diagnosaService;
     }
 
-    /**
-     * Get data master untuk form diagnosa
-     */
     public function getMasterData(): JsonResponse
     {
         $gejala = GejalaModel::select('id', 'kode_gejala', 'deskripsi_gejala', 'kategori')
@@ -41,25 +38,18 @@ class DiagnosaRepositories implements DiagnosaInterfaces
         ]);
     }
 
-    /**
-     * Proses diagnosa penyakit
-     */
     public function diagnosa(DiagnosaRequest $request): JsonResponse
     {
         try {
             $kondisiLingkungan = $request->input('kondisi_lingkungan');
             $gejalaDipilih = $request->input('gejala');
 
-            // Proses diagnosa
             $hasilDiagnosa = $this->diagnosaService->prosesDiagnosa($kondisiLingkungan, $gejalaDipilih);
 
-            // Ambil hasil terbaik
             $hasilTerbaik = $hasilDiagnosa[0];
 
-            // Simpan riwayat
             $riwayat = $this->diagnosaService->simpanRiwayat($kondisiLingkungan, $gejalaDipilih, $hasilTerbaik);
 
-            // Format response
             $response = [
                 'success' => true,
                 'message' => 'Diagnosa berhasil dilakukan',
@@ -95,9 +85,6 @@ class DiagnosaRepositories implements DiagnosaInterfaces
         }
     }
 
-    /**
-     * Get riwayat diagnosa
-     */
     public function getRiwayat(): JsonResponse
     {
         $riwayat = RiwayatDiagnosaModel::orderBy('created_at', 'desc')

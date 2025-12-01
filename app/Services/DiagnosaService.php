@@ -23,7 +23,7 @@ class DiagnosaService
             $skorGejala = $this->hitungSkorGejala($penyakit, $gejalaDipilih);
             $skorLingkungan = $this->hitungSkorLingkungan($penyakit, $kondisiLingkungan);
 
-            // Gabungkan skor dengan bobot 70% gejala dan 30% lingkungan
+
             $skorAkhir = ($skorGejala * 0.7) + ($skorLingkungan * 0.3);
 
             $hasilDiagnosa[] = [
@@ -34,8 +34,6 @@ class DiagnosaService
                 'persentase' => round($skorAkhir * 100, 2)
             ];
         }
-
-        // Urutkan berdasarkan skor akhir tertinggi
         usort($hasilDiagnosa, function ($a, $b) {
             return $b['skor_akhir'] <=> $a['skor_akhir'];
         });
@@ -83,7 +81,7 @@ class DiagnosaService
 
     private function cocokKondisiLingkungan($nilaiInput, string $kondisi, string $parameter): bool
     {
-        // Ambil parameter ideal dari database
+
         $param = ParameterLingkunganModel::where('nama_parameter', $parameter)->first();
 
         if (!$param) return false;

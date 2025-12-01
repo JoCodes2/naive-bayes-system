@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kode_gejala')->unique();
             $table->text('deskripsi_gejala');
-            $table->string('kategori')->default('umum');
+            $table->enum('kategori', ['akar', 'daun', 'buah', 'batang', 'umum'])->default('umum');
             $table->timestamps();
         });
     }
