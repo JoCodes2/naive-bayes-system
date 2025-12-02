@@ -26,6 +26,9 @@ Route::get('/gejala', function () {
 Route::get('/parameter-lingkungan', function () {
     return view('pages.lingkungan');
 });
+Route::get('/diagnosa', function () {
+    return view('pages.diagnosa');
+});
 
 
 
