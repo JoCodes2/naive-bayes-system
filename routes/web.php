@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CMS\DiagnosaController;
 use App\Http\Controllers\CMS\GejalaController;
+use App\Http\Controllers\CMS\ParameterLingkunganController;
 use App\Http\Controllers\CMS\PenyakitController;
 use App\Http\Controllers\CMS\PerawatanController;
 use App\Http\Controllers\CMS\RekomendasiController;
@@ -22,8 +23,8 @@ Route::get('/perawatan', function () {
 Route::get('/gejala', function () {
     return view('pages.gejala');
 });
-Route::get('/rekomendasi', function () {
-    return view('pages.rekomendasipencegahan');
+Route::get('/parameter-lingkungan', function () {
+    return view('pages.lingkungan');
 });
 
 
@@ -33,6 +34,14 @@ Route::get('/rekomendasi', function () {
 Route::prefix('naive-bayes')->group(function () {
 
     Route::prefix('gejala')->controller(GejalaController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+
+    Route::prefix('parameter-lingkungan')->controller(ParameterLingkunganController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
         Route::get('/get/{id}', 'getDataById');

@@ -45,18 +45,16 @@
                 <div>Gejala Penyakit</div>
             </a>
         </li>
-
+        <li class="menu-item {{ request()->is('parameter-lingkungan') ? 'active' : '' }}">
+            <a href="/parameter-lingkungan" class="menu-link">
+                <i class="menu-icon fa-solid fa-hand-holding-droplet"></i>
+                <div>Parameter Lingkungan</div>
+            </a>
+        </li>
         <li class="menu-item {{ request()->is('penyakit') ? 'active' : '' }}">
             <a href="/penyakit" class="menu-link">
                 <i class="menu-icon fa-solid fa-virus-covid"></i>
                 <div>Penyakit</div>
-            </a>
-        </li>
-
-        <li class="menu-item {{ request()->is('perawatan') ? 'active' : '' }}">
-            <a href="/perawatan" class="menu-link">
-                <i class="menu-icon fa-solid fa-hand-holding-droplet"></i>
-                <div>Perawatan</div>
             </a>
         </li>
         <li class="menu-item {{ request()->is('rekomendasi') ? 'active' : '' }}">
