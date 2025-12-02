@@ -1,4 +1,4 @@
-class rekomendasiService {
+class parameterService {
     ajaxRequest(url, method, data = null) {
         return new Promise((resolve, reject) => {
             $.ajax({
@@ -14,14 +14,14 @@ class rekomendasiService {
     }
 
     async getAllData() {
-        if ($.fn.dataTable.isDataTable('#rekomendasiTable')) {
-            $('#rekomendasiTable').DataTable().clear().destroy();
+        if ($.fn.dataTable.isDataTable('#parameterTable')) {
+            $('#parameterTable').DataTable().clear().destroy();
         }
 
-        $("#rekomendasiTable tbody").empty();
+        $("#parameterTable tbody").empty();
 
         try {
-            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/`, 'GET');
+            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/`, 'GET');
             console.log(responseData);
 
             if (responseData && responseData.data) {
@@ -32,14 +32,18 @@ class rekomendasiService {
                     tableBody += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${item.judul}</td>
+                        <td>${item.nama_parameter}</td>
+                        <td>${item.satuan}</td>
+                        <td>${item.kategori}</td>
+                        <td>${item.nilai_ideal_min}</td>
+                        <td>${item.nilai_ideal_max}</td>
                         <td>${item.deskripsi}</td>
                         <td class="text-center">
                            <div class="d-flex gap-2">
-                                <a href="#" class="edit-rekomendasi" data-id="${item.id}" title="Edit">
+                                <a href="#" class="edit-parameter" data-id="${item.id}" title="Edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <a href="#" class="delete-rekomendasi" data-id="${item.id}" title="Hapus">
+                                <a href="#" class="delete-parameter" data-id="${item.id}" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -48,9 +52,9 @@ class rekomendasiService {
                     `;
                 });
 
-                $("#rekomendasiTable tbody").html(tableBody);
+                $("#parameterTable tbody").html(tableBody);
 
-                $('#rekomendasiTable').DataTable({
+                $('#parameterTable').DataTable({
                     paging: true,
                     searching: true,
                     responsive: true,
@@ -66,58 +70,68 @@ class rekomendasiService {
         }
     }
 
-    async upsertData(form, checkingEdit) {
-        let submitButton = $('#btnSimpanRekomendasi');
+    async upsertData(e, checkingEdit) {
+        let submitButton = $(e.target).find(':submit');
 
         try {
-            const formData = new FormData(form);
+            const formData = new FormData(e.target);
             let responseData;
-
             if (checkingEdit()) {
                 const id = $('#id').val();
-                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/update/${id}`, 'POST', formData);
+                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/update/${id}`, 'POST', formData);
             } else {
                 submitButton.attr('disabled', true);
-                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/create`, 'POST', formData);
-            }
-            if (responseData.code === 200) {
-                successAlert().then(() => {
-                    realoadBrowser();
-                    $('#modalRekomendasi').modal('hide');
-                });
-            } else {
-                warningAlert();
+                responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/create`, 'POST', formData);
             }
 
-            submitButton.attr('disabled', false);
+            successAlert().then(() => {
+                realoadBrowser();
+                $('#modalParameter').modal('hide');
+            });
 
         } catch (error) {
+
             submitButton.attr('disabled', false);
+
+            if (error.status === 422 || error.response?.status === 422) {
+                warningAlert();
+                return;
+            }
             errorAlert();
-            console.error('Error:', error);
         }
+
     }
 
 
     async getDataById(id, checkingEdit) {
         try {
-            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/get/${id}`, 'GET');
+            const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/get/${id}`, 'GET');
             console.log(responseData);
-            $('#modalRekomendasi').modal('show');
-            $('#id').val(responseData.data.id);
-            $('#judul').val(responseData.data.judul);
-            $('#deskripsi').val(responseData.data.deskripsi);
+
+            const data = responseData.data;
+
+            $('#modalParameter').modal('show');
+
+            $('#id').val(data.id);
+            $('#nama_parameter').val(data.nama_parameter);
+            $('#satuan').val(data.satuan);
+            $('#kategori').val(data.kategori);
+            $('#nilai_ideal_min').val(data.nilai_ideal_min);
+            $('#nilai_ideal_max').val(data.nilai_ideal_max);
+            $('#deskripsi').val(data.deskripsi);
+
             checkingEdit();
         } catch (error) {
             console.log(error);
         }
     }
 
+
     async deleteData(id) {
         try {
             const result = await confirmDeleteAlert();
             if (result.isConfirmed) {
-                const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/rekomendasi/delete/${id}`, 'DELETE');
+                const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/delete/${id}`, 'DELETE');
                 console.log(responseData);
                 if (responseData.code === 200) {
                     await successAlert().then(() => {
@@ -134,4 +148,4 @@ class rekomendasiService {
 
 }
 
-export default rekomendasiService;
+export default parameterService;
