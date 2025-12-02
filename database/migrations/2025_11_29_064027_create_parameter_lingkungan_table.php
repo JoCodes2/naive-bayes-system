@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama_parameter');
             $table->string('satuan')->nullable();
-            $table->string('kategori');
+            $table->enum('kategori', ['air', 'tanah', 'cahaya', 'udara']);
             $table->decimal('nilai_ideal_min', 8, 2)->nullable();
             $table->decimal('nilai_ideal_max', 8, 2)->nullable();
             $table->text('deskripsi')->nullable();
