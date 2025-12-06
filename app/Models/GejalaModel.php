@@ -23,6 +23,6 @@ class GejalaModel extends Model
 
     public function aturanPenyakit()
     {
-        return $this->hasMany(AturanPenyakitGejalaModel::class, 'gejala_id');
+        return $this->hasMany(AturanGejalaModel::class, 'gejala_id');
     }
 }
