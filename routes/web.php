@@ -32,6 +32,14 @@ Route::get('/rekomendasi', function () {
 // Route api
 Route::prefix('naive-bayes')->group(function () {
 
+    Route::prefix('penyakit')->controller(PenyakitController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+
     Route::prefix('diagnosa')->controller(DiagnosaController::class)->group(function () {
         Route::get('/', 'getMasterData');
         Route::post('/create', 'diagnosa');
