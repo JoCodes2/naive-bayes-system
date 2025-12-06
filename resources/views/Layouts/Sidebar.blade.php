@@ -3,8 +3,8 @@
     <div class="app-brand demo">
         <a href="/" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="{{ asset('assets/assets/logonaivebayes.png') }}" alt="Logo" class="img-fluid"
-                    width="50" height="50">
+                <img src="{{ asset('assets/assets/logonaivebayes.png') }}" alt="Logo" class="img-fluid" width="50"
+                    height="50">
             </span>
             <span class="text-start app-brand-text fw-bold ms-2">
                 <small>Cabi</small><br>
@@ -62,6 +62,13 @@
                 <i class="menu-icon fa-solid fa-book-medical"></i>
                 <div>Aturan Gejala</div>
             </a>
+        </li>
+        <li class="menu-item {{ request()->is('aturan-penyakit-lingkungan') ? 'active' : '' }}">
+            <a href="/aturan-penyakit-lingkungan" class="menu-link">
+                <i class="menu-icon fa-solid fa-book-dead"></i>
+                <div>Aturan Penyakit & Lingkungan</div>
+            </a>
+        </li>
         <li class="menu-item {{ request()->is('rekomendasi') ? 'active' : '' }}">
             <a href="/rekomendasi" class="menu-link">
                 <i class="menu-icon fa-solid fa-lightbulb"></i>
