@@ -36,9 +36,16 @@ Route::get('/diagnosa', function () {
 // Route api
 Route::prefix('naive-bayes')->group(function () {
 
-<<<<<<< HEAD
+    // Penyakit
     Route::prefix('penyakit')->controller(PenyakitController::class)->group(function () {
-=======
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+
+    // Gejala
     Route::prefix('gejala')->controller(GejalaController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
@@ -47,8 +54,8 @@ Route::prefix('naive-bayes')->group(function () {
         Route::delete('/delete/{id}', 'deleteData');
     });
 
+    // Parameter Lingkungan
     Route::prefix('parameter-lingkungan')->controller(ParameterLingkunganController::class)->group(function () {
->>>>>>> 704c6a597f355f87ad9363425470cec96fa35edb
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
         Route::get('/get/{id}', 'getDataById');
@@ -56,6 +63,7 @@ Route::prefix('naive-bayes')->group(function () {
         Route::delete('/delete/{id}', 'deleteData');
     });
 
+    // Diagnosa
     Route::prefix('diagnosa')->controller(DiagnosaController::class)->group(function () {
         Route::get('/', 'getMasterData');
         Route::post('/create', 'diagnosa');
