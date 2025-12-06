@@ -13,6 +13,19 @@ class gejalaService {
         });
     }
 
+    getKategoriBadge(kategori) {
+        const colors = {
+            'akar': 'badge bg-danger',
+            'daun': 'badge bg-success',
+            'buah': 'badge bg-warning',
+            'batang': 'badge bg-primary',
+            'umum': 'badge bg-secondary'
+        };
+
+        return `<span class="${colors[kategori.toLowerCase()] || 'badge bg-dark'}">
+                ${kategori}
+            </span>`;
+    }
     async getAllData() {
         if ($.fn.dataTable.isDataTable('#gejalaTable')) {
             $('#gejalaTable').DataTable().clear().destroy();
@@ -25,27 +38,33 @@ class gejalaService {
             console.log(responseData);
 
             if (responseData && responseData.data) {
-                console.log();
+
+                const sortedData = responseData.data.sort((a, b) => {
+                    const numA = parseInt(a.kode_gejala.replace(/\D/g, ''));
+                    const numB = parseInt(b.kode_gejala.replace(/\D/g, ''));
+                    return numA - numB;
+                });
 
                 let tableBody = '';
-                responseData.data.forEach((item, index) => {
+                sortedData.forEach((item, index) => {
                     tableBody += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.nama}</td>
-                        <td>${item.deskripsi}</td>
-                        <td class="text-center">
-                           <div class="d-flex gap-2">
-                                <a href="#" class="edit-gejala" data-id="${item.id}" title="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <a href="#" class="delete-gejala" data-id="${item.id}" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    `;
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.kode_gejala}</td>
+                    <td>${this.getKategoriBadge(item.kategori)}</td>
+                    <td>${item.deskripsi_gejala}</td>
+                    <td class="text-center">
+                        <div class="d-flex gap-2">
+                            <a href="#" class="edit-gejala" data-id="${item.id}" title="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a href="#" class="delete-gejala" data-id="${item.id}" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                `;
                 });
 
                 $("#gejalaTable tbody").html(tableBody);
@@ -55,9 +74,10 @@ class gejalaService {
                     searching: true,
                     responsive: true,
                     order: [[0, 'asc']],
-                    pageLength: 5,
+                    pageLength: 10,
                     lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
                 });
+
             } else {
                 console.error('Response data is invalid:', responseData);
             }
@@ -66,13 +86,13 @@ class gejalaService {
         }
     }
 
-    async upsertData(form, checkingEdit) {
-        let submitButton = $('#btnSimpanGejala');
+
+    async upsertData(e, checkingEdit) {
+        let submitButton = $(e.target).find(':submit');
 
         try {
-            const formData = new FormData(form);
+            const formData = new FormData(e.target);
             let responseData;
-
             if (checkingEdit()) {
                 const id = $('#id').val();
                 responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/update/${id}`, 'POST', formData);
@@ -80,23 +100,37 @@ class gejalaService {
                 submitButton.attr('disabled', true);
                 responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/gejala/create`, 'POST', formData);
             }
-            if (responseData.code === 200) {
-                successAlert().then(() => {
-                    realoadBrowser();
-                    $('#modalGejala').modal('hide');
-                });
-            } else {
-                warningAlert();
-            }
 
-            submitButton.attr('disabled', false);
+            successAlert().then(() => {
+                realoadBrowser();
+                $('#modalGejala').modal('hide');
+            });
 
         } catch (error) {
+
             submitButton.attr('disabled', false);
+
+            if (error.status === 422 || error.response?.status === 422) {
+                warningAlert();
+                let errors = error.responseJSON?.data ?? error.response?.data;
+
+                let validator = $('#formGejala').validate();
+
+                validator.resetForm();
+
+                $.each(errors, function (field, messages) {
+                    validator.showErrors({
+                        [field]: messages[0]
+                    });
+                });
+
+                return;
+            }
             errorAlert();
-            console.error('Error:', error);
         }
+
     }
+
 
 
     async getDataById(id, checkingEdit) {
@@ -105,8 +139,9 @@ class gejalaService {
             console.log(responseData);
             $('#modalGejala').modal('show');
             $('#id').val(responseData.data.id);
-            $('#nama').val(responseData.data.nama);
-            $('#deskripsi').val(responseData.data.deskripsi);
+            $('#kode_gejala').val(responseData.data.kode_gejala);
+            $('#deskripsi_gejala').val(responseData.data.deskripsi_gejala);
+            $('#kategori').val(responseData.data.kategori);
             checkingEdit();
         } catch (error) {
             console.log(error);
