@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CMS\AturanGejalaController;
+use App\Http\Controllers\CMS\AturanPenyakitLingkunganController;
 use App\Http\Controllers\CMS\DiagnosaController;
 use App\Http\Controllers\CMS\GejalaController;
 use App\Http\Controllers\CMS\ParameterLingkunganController;
@@ -18,6 +19,9 @@ Route::get('/penyakit', function () {
 });
 Route::get('/aturan-gejala', function () {
     return view('admin.aturan_gejala');
+});
+Route::get('/aturan-penyakit-lingkungan', function () {
+    return view('admin.aturan_penyakit_lingkungan');
 });
 Route::get('/perawatan', function () {
     return view('admin.perawatan');
@@ -56,7 +60,15 @@ Route::prefix('naive-bayes')->group(function () {
         Route::get('/get/{id}', 'getDataById');
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');
+    });
 
+    // aturan Penyakit
+    Route::prefix('aturan-penyakit')->controller(AturanPenyakitLingkunganController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
     });
 
     // Gejala
