@@ -26,7 +26,7 @@ class PenyakitModel extends Model
 
     public function aturanGejala()
     {
-        return $this->hasMany(AturanPenyakitGejalaModel::class, 'penyakit_id');
+        return $this->hasMany(AturanGejalaModel::class, 'penyakit_id');
     }
 
     public function aturanLingkungan()

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class PenyakitRequest extends FormRequest
+class AturanGejalaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,29 +24,25 @@ class PenyakitRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id'); // ambil ID dari route /update/{id}
-
         return [
-            'kode_penyakit' => 'required|unique:penyakit,kode_penyakit,' . $id,
-            'nama_penyakit' => 'required',
-            'deskripsi' => 'required',
-            'solusi_perawatan' => 'required',
-            'tindakan_pencegahan' => 'required',
-            'faktor_risiko' => 'required',
+            'penyakit_id' => 'required|exists:penyakit,id',
+            'gejala_id'   => 'required|exists:gejala,id',
+            'bobot'       => 'required|numeric|between:0.1,1', // <= Range 0.1 - 1
         ];
     }
 
     public function messages(): array
     {
         return [
-            'kode_penyakit.required' => 'Kode penyakit wajib diisi.',
-            'kode_penyakit.unique' => 'Kode penyakit sudah digunakan, silakan gunakan kode lain.',
+            'penyakit_id.required' => 'Penyakit wajib dipilih.',
+            'penyakit_id.exists'   => 'Penyakit yang dipilih tidak valid.',
 
-            'nama_penyakit.required' => 'Nama penyakit wajib diisi.',
-            'deskripsi.required' => 'Deskripsi penyakit wajib diisi.',
-            'solusi_perawatan.required' => 'Solusi perawatan wajib diisi.',
-            'tindakan_pencegahan.required' => 'Tindakan pencegahan wajib diisi.',
-            'faktor_risiko.required' => 'Faktor risiko wajib diisi.',
+            'gejala_id.required'   => 'Gejala wajib dipilih.',
+            'gejala_id.exists'     => 'Gejala yang dipilih tidak valid.',
+
+            'bobot.required'       => 'Bobot wajib diisi.',
+            'bobot.numeric'        => 'Bobot harus berupa angka.',
+            'bobot.between'        => 'Bobot harus berada antara 0.1 sampai 1.',
         ];
     }
 

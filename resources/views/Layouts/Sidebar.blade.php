@@ -57,6 +57,11 @@
                 <div>Penyakit</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->is('aturan-gejala') ? 'active' : '' }}">
+            <a href="/aturan-gejala" class="menu-link">
+                <i class="menu-icon fa-solid fa-book-medical"></i>
+                <div>Aturan Gejala</div>
+            </a>
         <li class="menu-item {{ request()->is('rekomendasi') ? 'active' : '' }}">
             <a href="/rekomendasi" class="menu-link">
                 <i class="menu-icon fa-solid fa-lightbulb"></i>
