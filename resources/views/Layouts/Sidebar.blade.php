@@ -24,13 +24,13 @@
 
         <!-- ==================== PENGATURAN AKUN ==================== -->
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Pengaturan Akun</span>
+            <span class="menu-header-text">Analisis</span>
         </li>
 
         <li class="menu-item {{ request()->is('/') ? 'active' : '' }}">
             <a href="/" class="menu-link">
                 <i class="menu-icon fa-solid fa-user-gear"></i>
-                <div>Pengguna</div>
+                <div>Diagnosa</div>
             </a>
         </li>
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 //admin/view
 Route::get('/', function () {
-    return view('admin.user');
+    return view('pages.diagnosa');
 });
 Route::get('/penyakit', function () {
     return view('admin.penyakit');
@@ -25,9 +25,6 @@ Route::get('/gejala', function () {
 });
 Route::get('/parameter-lingkungan', function () {
     return view('pages.lingkungan');
-});
-Route::get('/diagnosa', function () {
-    return view('pages.diagnosa');
 });
 
 
