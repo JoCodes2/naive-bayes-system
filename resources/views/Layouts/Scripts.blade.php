@@ -26,6 +26,39 @@
  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
  <script src="{{ asset('helper/helper.js') }}"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+ {{-- Summernote CSS --}}
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+
+ {{-- Summernote JS --}}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+
+ <style>
+     .note-editor.note-frame {
+         border-radius: 8px;
+         border: 1px solid #dcdcdc;
+     }
+ </style>
+
+ {{-- tabel penyakit agar rapih --}}
+ <style>
+     table ul {
+         margin: 0;
+         padding-left: 18px;
+     }
+
+     /* Bikin isi tabel rata atas */
+     #dataPenyakit td {
+         vertical-align: top !important;
+     }
+
+     /* supaya teks list tidak terlalu mepet */
+     #dataPenyakit ul li {
+         margin-bottom: 4px;
+     }
+ </style>
+
+
  <script>
      const urlLogout = 'auth/logout'
      $(document).ready(function() {
