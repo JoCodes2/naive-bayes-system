@@ -23,10 +23,6 @@ Route::get('/aturan-gejala', function () {
 Route::get('/aturan-penyakit-lingkungan', function () {
     return view('admin.aturan_penyakit_lingkungan');
 });
-Route::get('/perawatan', function () {
-    return view('admin.perawatan');
-});
-
 //pagesview
 Route::get('/gejala', function () {
     return view('pages.gejala');
@@ -34,6 +30,10 @@ Route::get('/gejala', function () {
 Route::get('/parameter-lingkungan', function () {
     return view('pages.lingkungan');
 });
+Route::get('/riwayat', function () {
+    return view('pages.riwayat');
+});
+
 
 // Route api
 Route::prefix('naive-bayes')->group(function () {

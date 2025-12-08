@@ -33,6 +33,12 @@
                 <div>Diagnosa</div>
             </a>
         </li>
+         <li class="menu-item {{ request()->is('/riwayat') ? 'active' : '' }}">
+            <a href="/riwayat" class="menu-link">
+                <i class="menu-icon fa-solid fa-user-gear"></i>
+                <div>Riwayat</div>
+            </a>
+        </li>
 
         <!-- ==================== DATA MASTER ==================== -->
         <li class="menu-header small text-uppercase mt-3">
@@ -67,12 +73,6 @@
             <a href="/aturan-penyakit-lingkungan" class="menu-link">
                 <i class="menu-icon fa-solid fa-book-dead"></i>
                 <div>Aturan Penyakit & Lingkungan</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->is('rekomendasi') ? 'active' : '' }}">
-            <a href="/rekomendasi" class="menu-link">
-                <i class="menu-icon fa-solid fa-lightbulb"></i>
-                <div>Rekomendasi Pencegahan</div>
             </a>
         </li>
     </ul>
