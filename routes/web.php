@@ -35,9 +35,6 @@ Route::get('/parameter-lingkungan', function () {
     return view('pages.lingkungan');
 });
 
-
-
-
 // Route api
 Route::prefix('naive-bayes')->group(function () {
 

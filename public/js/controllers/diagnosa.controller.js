@@ -1,5 +1,5 @@
 /**
- * Diagnosa Controller - Handle DOM manipulation and events
+ * Diagnosa Controller - Handle DOM manipulation dengan jQuery Validate
  */
 class DiagnosaController {
     constructor(service) {
@@ -7,56 +7,177 @@ class DiagnosaController {
         this.gejalaData = [];
         this.parameterData = [];
         this.selectedGejala = [];
+        this.validator = null;
     }
 
     /**
      * Initialize controller
      */
-    init() {
+    async init() {
+        await this.loadData();
         this.bindEvents();
-        this.loadData();
+        this.setupValidation();
     }
 
     /**
      * Load initial data
      */
     async loadData() {
-        try {
-            // Load gejala and parameter data in parallel
-            const [gejalaData, parameterData] = await Promise.all([
-                this.service.getGejala(),
-                this.service.getParameterLingkungan()
-            ]);
+        // Load parameter lingkungan
+        const parameterResult = await this.service.getParameterLingkungan();
+        if (!parameterResult.success) return;
+        this.parameterData = parameterResult.data;
 
-            this.gejalaData = gejalaData;
-            this.parameterData = parameterData;
+        // Load gejala
+        const gejalaResult = await this.service.getGejala();
+        if (!gejalaResult.success) return;
+        this.gejalaData = gejalaResult.data;
 
-            this.renderParameterForm();
-            this.renderGejalaList();
+        this.renderParameterForm();
+        this.renderGejalaList();
+    }
 
-            this.showAlert('success', 'Data berhasil dimuat');
-        } catch (error) {
-            this.showAlert('danger', 'Gagal memuat data. Silahkan refresh halaman.');
-            console.error('Error loading data:', error);
-        }
+    /**
+     * Setup jQuery Validate dengan showErrors untuk full control
+     */
+    /**
+     * Setup jQuery Validate dengan custom handling untuk semua checkbox
+     */
+    setupValidation() {
+        // Dapatkan rules dari service
+        const { rules, messages } = this.service.getJqueryValidateRules(this.parameterData);
+
+        // Setup jQuery Validate
+        this.validator = $('#diagnosaForm').validate({
+            rules: {
+                ...rules,
+                'gejala[]': {
+                    required: true
+                }
+            },
+            messages: {
+                ...messages,
+                'gejala[]': {
+                    required: "Pilih minimal 1 gejala tanaman"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+
+            // Custom highlight untuk SEMUA checkbox
+            highlight: function (element, errorClass, validClass) {
+                // Untuk checkbox gejala[]
+                if (element.name === 'gejala[]') {
+                    // Tambah class error pada SEMUA checkbox
+                    $('input[name="gejala[]"]').addClass('error-border');
+                    $('input[name="gejala[]"] + .form-check-label').addClass('error-label');
+
+                    // Highlight container
+                    $('#gejalaList').addClass('error-container');
+                } else {
+                    // Untuk input biasa
+                    $(element).addClass('is-invalid');
+                }
+            },
+
+            // Custom unhighlight untuk SEMUA checkbox
+            unhighlight: function (element, errorClass, validClass) {
+                if (element.name === 'gejala[]') {
+                    // Hapus class error hanya jika checkbox ini sudah di-check
+                    if ($(element).is(':checked')) {
+                        $(element).removeClass('error-border');
+                        $(element).next('.form-check-label').removeClass('error-label');
+                    }
+
+                    // Cek apakah semua checkbox sudah valid
+                    const checkedCount = $('input[name="gejala[]"]:checked').length;
+                    if (checkedCount > 0) {
+                        // Hapus semua error styling
+                        $('input[name="gejala[]"]').removeClass('error-border');
+                        $('input[name="gejala[]"] + .form-check-label').removeClass('error-label');
+                        $('#gejalaList').removeClass('error-container');
+                    }
+                } else {
+                    $(element).removeClass('is-invalid');
+                }
+            },
+
+            // Custom error placement
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "gejala[]") {
+                    // Untuk gejala, tempatkan error di container khusus
+                    $('#gejalaErrorContainer').html(error);
+                } else {
+                    // Untuk input biasa
+                    error.insertAfter(element);
+                }
+            },
+
+            // Handler saat form invalid
+            invalidHandler: (event, validator) => {
+                // Jika gejala[] error, highlight semua checkbox
+                if (validator.errorMap['gejala[]']) {
+                    $('input[name="gejala[]"]').addClass('error-border');
+                    $('input[name="gejala[]"] + .form-check-label').addClass('error-label');
+                    $('#gejalaList').addClass('error-container');
+                }
+            },
+
+            submitHandler: (form) => {
+                this.handleSubmit(form);
+                return false;
+            }
+        });
     }
 
     /**
      * Bind all event listeners
      */
+    /**
+     * Bind all event listeners
+     */
+    /**
+     * Bind all event listeners
+     */
     bindEvents() {
-        // Form submission
-        $('#diagnosaForm').on('submit', (e) => this.handleSubmit(e));
+        // Checkbox events dengan debounce untuk performance
+        $(document).on('change', 'input[name="gejala[]"]', (e) => {
+            this.handleGejalaCheck(e);
 
-        // Checkbox events
-        $(document).on('change', '.gejala-checkbox', (e) => this.handleGejalaCheck(e));
+            // Validasi real-time dengan delay untuk UX yang lebih baik
+            setTimeout(() => {
+                const isValid = this.validator.element('[name="gejala[]"]');
 
-        // Input validation
-        $(document).on('input', 'input[type="number"]', (e) => this.handleInputValidation(e));
+                if (isValid) {
+                    // Hapus semua error styling jika valid
+                    this.removeGejalaErrorStyling();
+                } else {
+                    // Tambah error styling jika invalid
+                    this.applyGejalaErrorStyling();
+                }
+            }, 300);
+        });
 
-        // Button handlers (will be bound dynamically)
+        // Button handlers
         $(document).on('click', '#diagnosaLagiBtn', () => this.resetForm());
-        $(document).on('click', '#lihatRiwayatBtn', () => this.goToRiwayat());
+    }
+
+    /**
+     * Apply error styling pada semua checkbox gejala
+     */
+    applyGejalaErrorStyling() {
+        $('input[name="gejala[]"]').addClass('error-border');
+        $('input[name="gejala[]"] + .form-check-label').addClass('error-label');
+        $('#gejalaList').addClass('error-container');
+    }
+
+    /**
+     * Remove error styling dari semua checkbox gejala
+     */
+    removeGejalaErrorStyling() {
+        $('input[name="gejala[]"]').removeClass('error-border');
+        $('input[name="gejala[]"] + .form-check-label').removeClass('error-label');
+        $('#gejalaList').removeClass('error-container');
     }
 
     /**
@@ -67,6 +188,8 @@ class DiagnosaController {
 
         this.parameterData.forEach(param => {
             const fieldName = param.nama_parameter.toLowerCase().replace(/ /g, '_');
+            const min = param.nilai_ideal_min;
+            const max = param.nilai_ideal_max;
 
             html += `
             <div class="col-md-6 mb-3">
@@ -82,11 +205,14 @@ class DiagnosaController {
                         name="kondisi_lingkungan[${fieldName}]"
                         step="0.1"
                         placeholder="Masukkan nilai ${param.nama_parameter.toLowerCase()}"
-                        required
                         data-parameter="${fieldName}"
+                        data-min="${min || ''}"
+                        data-max="${max || ''}"
                     >
                     <div class="form-text">
-                        <span id="status_${fieldName}">Ideal: ${param.nilai_ideal_min} - ${param.nilai_ideal_max} ${param.satuan}</span>
+                        ${min !== null && max !== null
+                    ? `Ideal: ${min} - ${max} ${param.satuan}`
+                    : 'Tidak ada range ideal'}
                     </div>
                 </div>
             </div>
@@ -100,8 +226,16 @@ class DiagnosaController {
     /**
      * Render gejala list grouped by kategori
      */
+    /**
+     * Render gejala list grouped by kategori
+     */
+    /**
+  * Render gejala list grouped by kategori - 2 kolom layout
+  */
     renderGejalaList() {
-        let html = '';
+        let html = `
+    <div id="gejalaErrorContainer" class="mb-3"></div>
+    `;
 
         // Group gejala by kategori
         const gejalaByKategori = {};
@@ -115,78 +249,122 @@ class DiagnosaController {
         // Render each category
         Object.keys(gejalaByKategori).forEach(kategori => {
             const categoryName = kategori.charAt(0).toUpperCase() + kategori.slice(1);
+            const gejalaList = gejalaByKategori[kategori];
 
             html += `
-            <div class="col-12 mb-4 mt-3">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0">
-                            <i class="fas fa-folder me-2"></i>
-                            ${categoryName}
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-            `;
-
-            gejalaByKategori[kategori].forEach(gejala => {
-                html += `
-                <div class="col-md-4 col-sm-6 mb-3">
-                    <div class="form-check">
-                        <input
-                            class="form-check-input gejala-checkbox"
-                            type="checkbox"
-                            value="${gejala.id}"
-                            id="gejala_${gejala.id}"
-                            name="gejala[]"
-                            data-kategori="${gejala.kategori}"
-                        >
-                        <label class="form-check-label" for="gejala_${gejala.id}">
-                            <strong>${gejala.kode_gejala}:</strong> ${gejala.deskripsi_gejala}
-                        </label>
-                    </div>
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-folder me-2"></i>
+                        ${categoryName}
+                        <span class="badge bg-secondary float-end">${gejalaList.length} gejala</span>
+                    </h6>
                 </div>
-                `;
-            });
+                <div class="card-body">
+                    <div class="row">
+        `;
+
+            // Split menjadi 2 kolom
+            const midIndex = Math.ceil(gejalaList.length / 2);
+
+            // Kolom kiri
+            html += `<div class="col-md-6">`;
+            for (let i = 0; i < midIndex; i++) {
+                const gejala = gejalaList[i];
+                html += `
+            <div class="form-check mb-3">
+                <input
+                    class="form-check-input gejala-checkbox"
+                    type="checkbox"
+                    value="${gejala.id}"
+                    id="gejala_${gejala.id}"
+                    name="gejala[]"
+                    data-kategori="${kategori}"
+                >
+                <label class="form-check-label" for="gejala_${gejala.id}">
+                    <span class="badge bg-info me-2">${gejala.kode_gejala}</span>
+                    ${gejala.deskripsi_gejala}
+                </label>
+            </div>
+            `;
+            }
+            html += `</div>`;
+
+            // Kolom kanan
+            html += `<div class="col-md-6">`;
+            for (let i = midIndex; i < gejalaList.length; i++) {
+                const gejala = gejalaList[i];
+                html += `
+            <div class="form-check mb-3">
+                <input
+                    class="form-check-input gejala-checkbox"
+                    type="checkbox"
+                    value="${gejala.id}"
+                    id="gejala_${gejala.id}"
+                    name="gejala[]"
+                    data-kategori="${kategori}"
+                >
+                <label class="form-check-label" for="gejala_${gejala.id}">
+                    <span class="badge bg-info me-2">${gejala.kode_gejala}</span>
+                    ${gejala.deskripsi_gejala}
+                </label>
+            </div>
+            `;
+            }
+            html += `</div>`;
 
             html += `
-                        </div>
                     </div>
                 </div>
             </div>
-            `;
+        </div>
+        `;
         });
 
         $('#gejalaList').html(html);
-
-        // Update counter
-        this.updateGejalaCounter();
     }
-
     /**
      * Handle form submission
      */
-    /**
-     * Handle form submission
-     */
-    /**
-     * Handle form submission
-     */
+    async handleSubmit(form) {
+        // Validasi form terlebih dahulu
+        const isFormValid = this.validator.form();
 
+        if (!isFormValid) {
+            // Jika gejala error, apply styling ke semua checkbox
+            if (this.validator.errorMap['gejala[]']) {
+                this.applyGejalaErrorStyling();
+            }
+            return;
+        }
 
-    /**
-     * Collect kondisi lingkungan data from form
-     */
-    /**
-     * Collect kondisi lingkungan data from form
-     */
+        // Collect data untuk API
+        const kondisiLingkungan = this.collectKondisiLingkungan();
+
+        this.showLoading(true);
+
+        try {
+            // Process diagnosa via service
+            const result = await this.service.prosesDiagnosa(kondisiLingkungan, this.selectedGejala);
+
+            // Hide loading
+            this.showLoading(false);
+
+            if (result.success) {
+                this.showHasilDiagnosa(result.data);
+            }
+
+        } catch (error) {
+            this.showLoading(false);
+        }
+    }
     /**
      * Collect kondisi lingkungan data from form
      */
     collectKondisiLingkungan() {
         const kondisiLingkungan = {};
 
-        // Map field names exactly as required by API
         const fieldMapping = {
             'suhu_udara': 'suhu_udara',
             'kelembapan_udara': 'kelembapan_udara',
@@ -199,115 +377,12 @@ class DiagnosaController {
         Object.keys(fieldMapping).forEach(field => {
             const input = $(`#${field}`);
             if (input.length) {
-                const value = parseFloat(input.val());
-                if (!isNaN(value)) {
-                    kondisiLingkungan[field] = value;
-                } else {
-                    kondisiLingkungan[field] = null;
-                }
+                const value = input.val();
+                kondisiLingkungan[field] = value !== '' ? parseFloat(value) : null;
             }
         });
 
         return kondisiLingkungan;
-    }
-
-    /**
-     * Validate form data before submission
-     */
-    validateFormData(kondisiLingkungan) {
-        const errors = [];
-
-        // Validation rules based on your Laravel validation
-        const validationRules = {
-            suhu_udara: { min: 0, max: 50, message: 'Suhu udara harus antara 0-50°C' },
-            kelembapan_udara: { min: 0, max: 100, message: 'Kelembapan udara harus antara 0-100%' },
-            ph_tanah: { min: 0, max: 14, message: 'pH tanah harus antara 0-14' },
-            intensitas_cahaya: { min: 0, message: 'Intensitas cahaya harus positif' },
-            curah_hujan: { min: 0, message: 'Curah hujan harus positif' },
-            kelembapan_tanah: { min: 0, max: 100, message: 'Kelembapan tanah harus antara 0-100%' }
-        };
-
-        Object.keys(validationRules).forEach(field => {
-            const value = kondisiLingkungan[field];
-            const rule = validationRules[field];
-
-            if (value === null || value === undefined) {
-                errors.push(`${this.formatFieldName(field)} harus diisi`);
-                $(`#${field}`).addClass('is-invalid');
-            } else if (rule.min !== undefined && value < rule.min) {
-                errors.push(`${this.formatFieldName(field)} minimal ${rule.min}`);
-                $(`#${field}`).addClass('is-invalid');
-            } else if (rule.max !== undefined && value > rule.max) {
-                errors.push(`${this.formatFieldName(field)} maksimal ${rule.max}`);
-                $(`#${field}`).addClass('is-invalid');
-            } else {
-                $(`#${field}`).removeClass('is-invalid');
-            }
-        });
-
-        return errors;
-    }
-
-    formatFieldName(field) {
-        const names = {
-            'suhu_udara': 'Suhu Udara',
-            'kelembapan_udara': 'Kelembapan Udara',
-            'ph_tanah': 'pH Tanah',
-            'intensitas_cahaya': 'Intensitas Cahaya',
-            'curah_hujan': 'Curah Hujan',
-            'kelembapan_tanah': 'Kelembapan Tanah'
-        };
-        return names[field] || field;
-    }
-
-    /**
-     * Handle form submission
-     */
-    async handleSubmit(e) {
-        e.preventDefault();
-
-        // Validate gejala selection
-        if (this.selectedGejala.length === 0) {
-            this.showAlert('warning', 'Pilih minimal 1 gejala tanaman');
-            return;
-        }
-
-        // Collect data
-        const kondisiLingkungan = this.collectKondisiLingkungan();
-        console.log('Kondisi Lingkungan:', kondisiLingkungan);
-        console.log('Gejala Dipilih:', this.selectedGejala);
-
-        // Validate form data
-        const validationErrors = this.validateFormData(kondisiLingkungan);
-        if (validationErrors.length > 0) {
-            this.showAlert('danger', validationErrors.join(', '));
-            return;
-        }
-
-        // Show loading
-        this.showLoading(true);
-
-        try {
-            // Process diagnosa
-            console.log('Sending request...');
-            const response = await this.service.prosesDiagnosa(kondisiLingkungan, this.selectedGejala);
-            console.log('Response received:', response);
-
-            // Hide loading
-            this.showLoading(false);
-
-            if (response.success) {
-                this.showHasilDiagnosa(response.data);
-                this.showAlert('success', 'Diagnosa berhasil dilakukan!');
-            } else {
-                this.showAlert('danger', response.message || 'Terjadi kesalahan');
-            }
-        } catch (error) {
-            this.showLoading(false);
-            console.error('Error in handleSubmit:', error);
-
-            this.showAlert('danger', error.message || 'Terjadi kesalahan pada server');
-        }
     }
 
     /**
@@ -325,70 +400,6 @@ class DiagnosaController {
                 this.selectedGejala.splice(index, 1);
             }
         }
-
-        this.updateGejalaCounter();
-    }
-
-    /**
-     * Update gejala selection counter
-     */
-    updateGejalaCounter() {
-        const counter = $('.gejala-checkbox:checked').length;
-        const total = $('.gejala-checkbox').length;
-
-        // Update any counter display if exists
-        if ($('#gejalaCounter').length === 0) {
-            $('#gejalaList').before(`
-                <div class="alert alert-info" id="gejalaCounter">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <span id="counterText">Tidak ada gejala yang dipilih</span>
-                </div>
-            `);
-        }
-
-        const counterText = counter === 0
-            ? 'Tidak ada gejala yang dipilih'
-            : `Dipilih ${counter} dari ${total} gejala`;
-
-        $('#counterText').text(counterText);
-    }
-
-    /**
-     * Handle input validation for numbers
-     */
-    handleInputValidation(e) {
-        const input = $(e.target);
-        const value = parseFloat(input.val());
-        const fieldName = input.attr('data-parameter');
-
-        if (isNaN(value)) {
-            input.removeClass('is-invalid is-warning is-valid');
-            $(`#status_${fieldName}`).removeClass('text-danger text-warning text-success');
-            return;
-        }
-
-        // Find matching parameter
-        const param = this.parameterData.find(p =>
-            p.nama_parameter.toLowerCase().replace(/ /g, '_') === fieldName
-        );
-
-        if (!param) return;
-
-        const validation = this.service.validateInput(value, param);
-        const statusElement = $(`#status_${fieldName}`);
-
-        // Update input class
-        input.removeClass('is-invalid is-warning is-valid');
-        input.addClass(`is-${validation.status}`);
-
-        // Update status text
-        statusElement.removeClass('text-danger text-warning text-success');
-        statusElement.addClass(`text-${validation.status}`);
-        statusElement.html(`
-            Ideal: ${param.nilai_ideal_min} - ${param.nilai_ideal_max} ${param.satuan}
-            <br>
-            <small><em>${validation.message}</em></small>
-        `);
     }
 
     /**
@@ -496,9 +507,6 @@ class DiagnosaController {
                     <button class="btn btn-success me-2" id="diagnosaLagiBtn">
                         <i class="fas fa-redo me-2"></i>Diagnosa Lagi
                     </button>
-                    <button class="btn btn-outline-secondary" id="lihatRiwayatBtn">
-                        <i class="fas fa-history me-2"></i>Lihat Riwayat
-                    </button>
                 </div>
             </div>
         </div>
@@ -552,32 +560,29 @@ class DiagnosaController {
      * Reset form for new diagnosa
      */
     resetForm() {
-        // Reset form fields
+        // Reset form validation
+        this.validator.resetForm();
         $('#diagnosaForm')[0].reset();
 
         // Reset gejala selection
         this.selectedGejala = [];
-        $('.gejala-checkbox').prop('checked', false);
+        $('input[name="gejala[]"]').prop('checked', false);
+
+        // Remove semua custom error styling
+        this.removeGejalaErrorStyling();
+        $('.form-control').removeClass('is-invalid');
+
+        // Clear error message
+        $('#gejalaErrorContainer').empty();
 
         // Hide results
         $('#hasilDiagnosa').addClass('d-none');
 
-        // Reset validation classes
-        $('input[type="number"]').removeClass('is-invalid is-warning is-valid');
-        $('.form-text').removeClass('text-danger text-warning text-success');
-
-        // Update counter
-        this.updateGejalaCounter();
-
         // Scroll to top
         this.scrollToElement('body');
-    }
 
-    /**
-     * Navigate to riwayat page
-     */
-    goToRiwayat() {
-        window.location.href = '/api/diagnosa/riwayat';
+        // Show success message
+        successAlert('Form berhasil direset');
     }
 
     /**
@@ -594,25 +599,6 @@ class DiagnosaController {
             submitBtn.prop('disabled', false);
             loadingSpinner.addClass('d-none');
         }
-    }
-
-    /**
-     * Show alert message
-     */
-    showAlert(type, message) {
-        const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        `;
-
-        $('#alertArea').html(alertHtml);
-
-        // Auto dismiss after 5 seconds
-        setTimeout(() => {
-            $('.alert').alert('close');
-        }, 5000);
     }
 
     /**

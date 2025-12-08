@@ -1,9 +1,40 @@
 /**
- * Diagnosa Service - Handle API calls
+ * Diagnosa Service - Handle semua API calls dan business logic
  */
 class DiagnosaService {
     constructor(baseUrl = '') {
         this.baseUrl = baseUrl;
+        this.validationRules = {};
+    }
+
+    /**
+     * Set validation rules dari parameter data untuk jQuery Validate
+     */
+    getJqueryValidateRules(parameterData) {
+        const rules = {};
+        const messages = {};
+
+        parameterData.forEach(param => {
+            const fieldName = param.nama_parameter.toLowerCase().replace(/ /g, '_');
+            const min = parseFloat(param.nilai_ideal_min);
+            const max = parseFloat(param.nilai_ideal_max);
+
+            rules[`kondisi_lingkungan[${fieldName}]`] = {
+                required: true,
+                number: true,
+                min: min,
+                max: max
+            };
+
+            messages[`kondisi_lingkungan[${fieldName}]`] = {
+                required: `${param.nama_parameter} harus diisi`,
+                number: `${param.nama_parameter} harus berupa angka`,
+                min: `${param.nama_parameter} minimal ${min} ${param.satuan}`,
+                max: `${param.nama_parameter} maksimal ${max} ${param.satuan}`
+            };
+        });
+
+        return { rules, messages };
     }
 
     /**
@@ -17,12 +48,14 @@ class DiagnosaService {
             });
 
             if (response.code === 200) {
-                return response.data;
+                return { success: true, data: response.data };
+            } else {
+                errorAlert();
+                return { success: false, message: 'Gagal memuat data gejala' };
             }
-            throw new Error('Failed to load gejala data');
         } catch (error) {
-            console.error('Error loading gejala:', error);
-            throw error;
+            errorAlert();
+            return { success: false, message: 'Gagal memuat data gejala' };
         }
     }
 
@@ -37,26 +70,23 @@ class DiagnosaService {
             });
 
             if (response.code === 200) {
-                return response.data;
+                return { success: true, data: response.data };
+            } else {
+                errorAlert();
+                return { success: false, message: 'Gagal memuat data parameter' };
             }
-            throw new Error('Failed to load parameter data');
         } catch (error) {
-            console.error('Error loading parameter:', error);
-            throw error;
+            errorAlert();
+            return { success: false, message: 'Gagal memuat data parameter' };
         }
     }
 
     /**
      * Process diagnosa
-     * @param {Object} kondisiLingkungan
-     * @param {Array} gejalaDipilih
-     */
-    /**
-     * Process diagnosa
      */
     async prosesDiagnosa(kondisiLingkungan, gejalaDipilih) {
         try {
-            // Prepare data in EXACT format required by API
+            // Prepare data
             const requestData = {
                 kondisi_lingkungan: {
                     suhu_udara: parseFloat(kondisiLingkungan.suhu_udara),
@@ -69,8 +99,6 @@ class DiagnosaService {
                 gejala: gejalaDipilih
             };
 
-            console.log('Sending data to API:', JSON.stringify(requestData, null, 2));
-
             const response = await $.ajax({
                 url: `${this.baseUrl}/naive-bayes/diagnosa/create`,
                 method: 'POST',
@@ -82,138 +110,50 @@ class DiagnosaService {
                 }
             });
 
-            console.log('API Response:', response);
-            return response;
+            if (response.success) {
+                return {
+                    success: true,
+                    data: response.data,
+                    message: 'Diagnosa berhasil'
+                };
+            } else {
+                return {
+                    success: false,
+                    message: response.message
+                };
+            }
 
         } catch (error) {
             console.error('Full error object:', error);
-            console.error('Error status:', error.status);
-            console.error('Error response:', error.responseJSON);
-            console.error('Error responseText:', error.responseText);
 
-            // Provide detailed error message
             let errorMessage = 'Terjadi kesalahan pada server';
+            let shouldShowAlert = true;
+            let alertType = 'error'; // default
 
-            if (error.responseJSON) {
-                if (error.responseJSON.errors) {
-                    const errorMessages = Object.values(error.responseJSON.errors).flat();
-                    errorMessage = errorMessages.join(', ');
-                } else if (error.responseJSON.message) {
-                    errorMessage = error.responseJSON.message;
-                }
-            } else if (error.responseText) {
-                try {
-                    const parsedError = JSON.parse(error.responseText);
-                    if (parsedError.errors) {
-                        const errorMessages = Object.values(parsedError.errors).flat();
-                        errorMessage = errorMessages.join(', ');
-                    }
-                } catch (e) {
-                    errorMessage = error.responseText;
-                }
+            if (error.status === 422) {
+                setTimeout(() => {
+                    warningAlert(errorMessage);
+                }, 100);
+
+            } else if (error.status === 500) {
+                setTimeout(() => {
+                    errorAlert();
+                }, 100);
+            } else if (error.statusText) {
+                errorMessage = error.statusText;
             }
 
-            throw new Error(errorMessage);
-        }
-    }
-
-    /**
-     * Get riwayat diagnosa
-     */
-    async getRiwayat() {
-        try {
-            const response = await $.ajax({
-                url: `${this.baseUrl}/naive-bayes/diagnosa/riwayat`,
-                method: 'GET'
-            });
-
-            return response;
-        } catch (error) {
-            console.error('Error loading riwayat:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Validate input values against parameter ideal ranges
-     */
-    validateInput(value, parameter) {
-        const min = parseFloat(parameter.nilai_ideal_min);
-        const max = parseFloat(parameter.nilai_ideal_max);
-
-        if (value < min * 0.5 || value > max * 2) {
             return {
-                status: 'danger',
-                message: 'Nilai di luar batas wajar'
+                success: false,
+                statusCode: error.status,
             };
         }
-
-        if (value < min || value > max) {
-            return {
-                status: 'warning',
-                message: 'Nilai di luar range ideal'
-            };
-        }
-
-        return {
-            status: 'success',
-            message: 'Nilai optimal'
-        };
     }
 
     /**
-     * Validate data before sending
+     * Validate gejala selection
      */
-    validateDataBeforeSend(kondisiLingkungan) {
-        const errors = [];
-
-        // Check all required fields are present
-        const requiredFields = [
-            'suhu_udara',
-            'kelembapan_udara',
-            'ph_tanah',
-            'intensitas_cahaya',
-            'curah_hujan',
-            'kelembapan_tanah'
-        ];
-
-        requiredFields.forEach(field => {
-            if (!kondisiLingkungan[field] && kondisiLingkungan[field] !== 0) {
-                errors.push(`${this.formatFieldName(field)} harus diisi`);
-            } else if (isNaN(parseFloat(kondisiLingkungan[field]))) {
-                errors.push(`${this.formatFieldName(field)} harus berupa angka`);
-            }
-        });
-
-        // Specific validations
-        if (kondisiLingkungan.suhu_udara && (kondisiLingkungan.suhu_udara < 0 || kondisiLingkungan.suhu_udara > 50)) {
-            errors.push('Suhu udara harus antara 0-50°C');
-        }
-
-        if (kondisiLingkungan.kelembapan_udara && (kondisiLingkungan.kelembapan_udara < 0 || kondisiLingkungan.kelembapan_udara > 100)) {
-            errors.push('Kelembapan udara harus antara 0-100%');
-        }
-
-        if (kondisiLingkungan.ph_tanah && (kondisiLingkungan.ph_tanah < 0 || kondisiLingkungan.ph_tanah > 14)) {
-            errors.push('pH tanah harus antara 0-14');
-        }
-
-        if (kondisiLingkungan.kelembapan_tanah && (kondisiLingkungan.kelembapan_tanah < 0 || kondisiLingkungan.kelembapan_tanah > 100)) {
-            errors.push('Kelembapan tanah harus antara 0-100%');
-        }
-
-        return errors;
-    }
-
-    formatFieldName(field) {
-        const names = {
-            'suhu_udara': 'Suhu Udara',
-            'kelembapan_udara': 'Kelembapan Udara',
-            'ph_tanah': 'pH Tanah',
-            'intensitas_cahaya': 'Intensitas Cahaya',
-            'curah_hujan': 'Curah Hujan',
-            'kelembapan_tanah': 'Kelembapan Tanah'
-        };
-        return names[field] || field;
+    validateGejalaSelection(selectedGejala) {
+        return selectedGejala.length > 0;
     }
 }
