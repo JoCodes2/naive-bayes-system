@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 //admin/view
 Route::get('/', function () {
-    return view('admin.user');
+    return view('pages.diagnosa');
 });
 Route::get('/penyakit', function () {
     return view('admin.penyakit');
@@ -23,10 +23,6 @@ Route::get('/aturan-gejala', function () {
 Route::get('/aturan-penyakit-lingkungan', function () {
     return view('admin.aturan_penyakit_lingkungan');
 });
-Route::get('/perawatan', function () {
-    return view('admin.perawatan');
-});
-
 //pagesview
 Route::get('/gejala', function () {
     return view('pages.gejala');
@@ -34,11 +30,9 @@ Route::get('/gejala', function () {
 Route::get('/parameter-lingkungan', function () {
     return view('pages.lingkungan');
 });
-Route::get('/diagnosa', function () {
-    return view('pages.diagnosa');
+Route::get('/riwayat', function () {
+    return view('pages.riwayat');
 });
-
-
 
 
 // Route api

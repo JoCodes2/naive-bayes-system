@@ -29,4 +29,12 @@ class RiwayatDiagnosaModel extends Model
         'kondisi_lingkungan' => 'array',
         'gejala_yang_dipilih' => 'array',
     ];
+    public function penyakit()
+    {
+        return $this->belongsTo(PenyakitModel::class, 'penyakit_id');
+    }
+    public function gejala()
+    {
+        return $this->belongsToMany(GejalaModel::class, 'riwayat_gejala', 'riwayat_id', 'gejala_id');
+    }
 }

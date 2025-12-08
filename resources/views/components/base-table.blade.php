@@ -1,11 +1,13 @@
-<table id="{{ $initId }}" class="table table-borderless">
-    <thead>
-        <tr>
-            @foreach($columns as $col)
-                <th>{{ $col }}</th>
-            @endforeach
-        </tr>
-    </thead>
+<div class="table-responsive">
+    <table id="{{ $initId }}" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                @foreach($columns as $col)
+                    <th>{{ $col }}</th>
+                @endforeach
+            </tr>
+        </thead>
 
-    {{ $slot }}
-</table>
+        {{ $slot }}
+    </table>
+</div>

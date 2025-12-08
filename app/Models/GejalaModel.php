@@ -25,4 +25,5 @@ class GejalaModel extends Model
     {
         return $this->hasMany(AturanGejalaModel::class, 'gejala_id');
     }
+    
 }

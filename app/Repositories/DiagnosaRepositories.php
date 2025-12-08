@@ -87,17 +87,29 @@ class DiagnosaRepositories implements DiagnosaInterfaces
 
     public function getRiwayat(): JsonResponse
     {
-        $riwayat = RiwayatDiagnosaModel::orderBy('created_at', 'desc')
+        $riwayat = RiwayatDiagnosaModel::with('penyakit')
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($item) {
+
+                $gejalaIds = is_array($item->gejala_yang_dipilih)
+                    ? $item->gejala_yang_dipilih
+                    : json_decode($item->gejala_yang_dipilih, true);
+
+                $gejala = GejalaModel::whereIn('id', $gejalaIds)
+                    ->pluck('deskripsi_gejala');
+
                 return [
                     'id' => $item->id,
                     'penyakit_id' => $item->penyakit_id,
+                    'nama_penyakit' => $item->penyakit->nama_penyakit ?? '-',
                     'tingkat_kepercayaan' => $item->tingkat_kepercayaan . '%',
                     'rekomendasi_perawatan' => $item->rekomendasi_perawatan,
                     'rekomendasi_pencegahan' => $item->rekomendasi_pencegahan,
                     'kondisi_lingkungan' => $item->kondisi_lingkungan,
-                    'gejala_yang_dipilih' => $item->gejala_yang_dipilih,
+
+                    'gejala' => $gejala,
+
                     'tanggal_diagnosa' => $item->created_at->format('d-m-Y H:i:s'),
                     'catatan_tambahan' => $item->catatan_tambahan
                 ];
