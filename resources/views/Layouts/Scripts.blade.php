@@ -73,7 +73,7 @@
                  if (result.isConfirmed) {
                      e.preventDefault();
                      $.ajax({
-                         url: `{{ url('v1/logout') }}`,
+                         url: `{{ url('/logout') }}`,
                          method: 'POST',
                          dataType: 'json',
                          headers: {

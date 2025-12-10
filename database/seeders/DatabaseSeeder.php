@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ParameterLingkunganSeeder::class,
             AturanPenyakitGejalaSeeder::class,
             AturanPenyakitLingkunganSeeder::class,
+            AuthSeeder::class,
         ]);
     }
 }
