@@ -1,3 +1,4 @@
+@props(['modalId', 'modalLabelId', 'formId', 'submitId', 'title', 'submitText'])
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalLabelId }}"
     aria-hidden="true">
     <div class="modal-dialog {{ $modalSize ?? 'modal-lg' }}">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\CMS\AturanGejalaController;
 use App\Http\Controllers\CMS\AturanPenyakitLingkunganController;
 use App\Http\Controllers\CMS\DiagnosaController;
@@ -10,29 +11,12 @@ use App\Http\Controllers\CMS\PerawatanController;
 use App\Http\Controllers\CMS\RekomendasiController;
 use Illuminate\Support\Facades\Route;
 
-//admin/view
-Route::get('/', function () {
-    return view('pages.diagnosa');
-});
-Route::get('/penyakit', function () {
-    return view('admin.penyakit');
-});
-Route::get('/aturan-gejala', function () {
-    return view('admin.aturan_gejala');
-});
-Route::get('/aturan-penyakit-lingkungan', function () {
-    return view('admin.aturan_penyakit_lingkungan');
-});
-//pagesview
-Route::get('/gejala', function () {
-    return view('pages.gejala');
-});
-Route::get('/parameter-lingkungan', function () {
-    return view('pages.lingkungan');
-});
-Route::get('/riwayat', function () {
-    return view('pages.riwayat');
-});
+
+
+Route::post('auth/login', [AuthController::class, 'login']);
+Route::get('/login', function () {
+    return view('Auth.Login');
+})->name('login')->middleware('guest');
 
 
 // Route api
@@ -89,4 +73,33 @@ Route::prefix('naive-bayes')->group(function () {
         Route::post('/create', 'diagnosa');
         Route::get('/riwayat', 'getRiwayat');
     });
+});
+
+Route::middleware(['auth', 'web'])->group(function () {
+
+    //admin/view
+    Route::get('/', function () {
+        return view('pages.diagnosa');
+    });
+    Route::get('/penyakit', function () {
+        return view('admin.penyakit');
+    });
+    Route::get('/aturan-gejala', function () {
+        return view('admin.aturan_gejala');
+    });
+    Route::get('/aturan-penyakit-lingkungan', function () {
+        return view('admin.aturan_penyakit_lingkungan');
+    });
+    //pagesview
+    Route::get('/gejala', function () {
+        return view('pages.gejala');
+    });
+    Route::get('/parameter-lingkungan', function () {
+        return view('pages.lingkungan');
+    });
+    Route::get('/riwayat', function () {
+        return view('pages.riwayat');
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
