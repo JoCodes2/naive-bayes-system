@@ -4,7 +4,7 @@
 {{-- Header --}}
 <x-base-header
     title="Diagnosa Tanaman"
-    icon="fa-solid fa-virus"
+    icon="fa-solid fa-stethoscope"
 />
 
 {{-- Body --}}
@@ -21,7 +21,7 @@
 
             {{-- Kondisi Lingkungan --}}
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-light ">
                     <h5 class="mb-0"><i class="fas fa-temperature-half me-2"></i>Kondisi Lingkungan</h5>
                 </div>
                 <div class="card-body">
@@ -38,7 +38,7 @@
 
             {{-- Gejala Tanaman --}}
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-light ">
                     <h5 class="mb-0"><i class="fas fa-leaf me-2"></i>Gejala Tanaman</h5>
                 </div>
                 <div class="card-body">

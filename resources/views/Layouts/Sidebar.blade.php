@@ -29,13 +29,13 @@
 
         <li class="menu-item {{ request()->is('/') ? 'active' : '' }}">
             <a href="/" class="menu-link">
-                <i class="menu-icon fa-solid fa-user-gear"></i>
+                <i class="menu-icon  fa-solid fa-stethoscope"></i>
                 <div>Diagnosa</div>
             </a>
         </li>
          <li class="menu-item {{ request()->is('/riwayat') ? 'active' : '' }}">
             <a href="/riwayat" class="menu-link">
-                <i class="menu-icon fa-solid fa-user-gear"></i>
+                <i class="menu-icon fa-solid fa-clock-rotate-left"></i>
                 <div>Riwayat</div>
             </a>
         </li>
@@ -47,7 +47,7 @@
 
         <li class="menu-item {{ request()->is('gejala') ? 'active' : '' }}">
             <a href="/gejala" class="menu-link">
-                <i class="menu-icon fa-solid fa-stethoscope"></i>
+                <i class="menu-icon fa-solid fa-virus"></i>
                 <div>Gejala Penyakit</div>
             </a>
         </li>

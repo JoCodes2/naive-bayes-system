@@ -4,7 +4,7 @@
     {{-- Header --}}
 <x-base-header
     title="Riwayat Diagnosa"
-    icon="fa-solid fa-virus"
+    icon="fa-solid fa-clock-rotate-left"
 />
     {{-- Body --}}
     <x-base-body

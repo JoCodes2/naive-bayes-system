@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::get('/login', function () {
-    return view('Auth.Login');
+    return view('auth.login');
 })->name('login')->middleware('guest');
 
 
