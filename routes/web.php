@@ -84,6 +84,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/penyakit', function () {
         return view('admin.penyakit');
     });
+    Route::get('/diagnosa-penyakit', function () {
+        return view('admin.diagnosa_penyakit');
+    });
     Route::get('/aturan-gejala', function () {
         return view('admin.aturan_gejala');
     });
