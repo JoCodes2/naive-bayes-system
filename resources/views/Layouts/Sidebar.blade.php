@@ -27,20 +27,14 @@
             <span class="menu-header-text">Analisis</span>
         </li>
 
-        <li class="menu-item {{ request()->is('/') ? 'active' : '' }}">
-            <a href="/" class="menu-link">
+        <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+            <a href="/dashboard" class="menu-link">
                 <i class="menu-icon  fa-solid fa-stethoscope"></i>
                 <div>Diagnosa</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('/diagnosa-penyakit') ? 'active' : '' }}">
-            <a href="/diagnosa-penyakit" class="menu-link">
-                <i class="menu-icon fa-solid fa-user-doctor"></i>
-                <div>Diagnosa Penyakit</div>
-            </a>
-        </li>
 
-        <li class="menu-item {{ request()->is('/riwayat') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->is('riwayat') ? 'active' : '' }}">
             <a href="/riwayat" class="menu-link">
                 <i class="menu-icon fa-solid fa-clock-rotate-left"></i>
                 <div>Riwayat</div>

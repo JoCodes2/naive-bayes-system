@@ -18,6 +18,10 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
+Route::get('/', function () {
+    return view('web.naive-bayes-system');
+});
+
 
 // Route api
 Route::prefix('naive-bayes')->group(function () {
@@ -78,7 +82,7 @@ Route::prefix('naive-bayes')->group(function () {
 Route::middleware(['auth', 'web'])->group(function () {
 
     //admin/view
-    Route::get('/', function () {
+    Route::get('/dashboard', function () {
         return view('pages.diagnosa');
     });
     Route::get('/penyakit', function () {

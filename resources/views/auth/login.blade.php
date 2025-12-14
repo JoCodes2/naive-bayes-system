@@ -172,7 +172,7 @@
                     Swal.fire("Success", "Login berhasil!", "success");
 
                     setTimeout(() => {
-                        window.location.href = "/";
+                        window.location.href = "/dashboard";
                     }, 800);
                 },
                 error: function(xhr) {
