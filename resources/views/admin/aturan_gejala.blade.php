@@ -8,28 +8,70 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="card bg-light border-left-info shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mr-3">
+                                <i class="fas fa-chart-line fa-2x text-info"></i>
+                            </div>
+                            <div>
+                                <h6 class="font-weight-bold mb-1">Skala Penentuan Bobot Probabilitas</h6>
+                                <p class="small mb-0 text-muted">Silakan gunakan referensi angka berikut untuk mengisi kolom bobot pada setiap gejala:</p>
+                            </div>
+                        </div>
 
-                <!-- Card Section -->
+                        <div class="row text-center mt-3">
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-white shadow-sm">
+                                    <h3 class="font-weight-bold text-danger mb-1">0.8 - 1.0</h3>
+                                    <span class="badge badge-danger mb-2 text-dark">Sangat Kuat / Khas</span>
+                                    <p class="small text-muted mb-0">Gejala pasti muncul & jarang ditemui di penyakit lain (Patognomonik).</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-white shadow-sm">
+                                    <h3 class="font-weight-bold text-warning mb-1">0.4 - 0.7</h3>
+                                    <span class="badge badge-warning mb-2 text-dark">Sedang / Umum</span>
+                                    <p class="small text-muted mb-0">Gejala sering muncul namun bisa tumpang tindih dengan penyakit lain.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-white shadow-sm">
+                                    <h3 class="font-weight-bold text-secondary mb-1">0.1 - 0.3</h3>
+                                    <span class="badge badge-secondary mb-2 text-dark">Lemah / Pendukung</span>
+                                    <p class="small text-muted mb-0">Gejala tambahan yang jarang terlihat atau hanya faktor kebetulan.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-3 mb-0 py-2" style="font-size: 0.85rem;">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Penting:</strong> Dalam Naive Bayes, hindari memberi bobot <strong>0</strong> karena akan mematikan hasil perhitungan (hasil diagnosa otomatis menjadi 0%).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">DAFTAR ATURAN GEJALA</h5>
-                        {{-- @if (auth()->user()->role === 'admin') --}}
                         <button class="btn btn-primary btn-sm" id="myBtn">
-                            <i class="fas fa-plus"></i> Tambah
+                            <i class="fas fa-plus"></i> Tambah Aturan
                         </button>
-                        {{-- @endif --}}
                     </div>
 
                     <div class="card-body">
                         <div class="table-responsive text-nowrap">
-                            <table id="dataAturanGejala" class="table table-borderless">
+                            <table id="dataAturanGejala" class="table table-borderless table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Kode Penyakit</th>
-                                        <th>Kode Gejala</th>
+                                        <th>Penyakit</th>
+                                        <th>Gejala</th>
                                         <th>Bobot</th>
-
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -38,10 +80,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <!-- Modal Tambah/Edit -->

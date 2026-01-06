@@ -1,110 +1,73 @@
 <?php
-// database/seeders/AturanPenyakitGejalaSeeder.php
 
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
+use Carbon\Carbon;
 
 class AturanPenyakitGejalaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil semua penyakit dan gejala
-        $penyakit = DB::table('penyakit')->get();
-        $gejala = DB::table('gejala')->get();
+        $now = Carbon::now();
 
-        $aturan = [];
+        // Pemetaan yang disesuaikan dengan 10 Penyakit (P001-P010)
+        // dan Gejala (G001-G025)
+        $rules = [
+            // P001: Antraknosa (Patek) -> Fokus pada Buah
+            'P001' => ['G011' => 0.95, 'G013' => 0.60, 'G025' => 0.40],
 
-        // Aturan untuk Antraknosa (P001)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P001')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G011')->first()->id, 'bobot' => 0.9]; // Buah busuk
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P001')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G012')->first()->id, 'bobot' => 0.8]; // Bercak pada buah
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P001')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G003')->first()->id, 'bobot' => 0.6]; // Bercak coklat pada daun
+            // P002: Layu Fusarium -> Fokus pada Layu & Kuning Bawah
+            'P002' => ['G001' => 0.85, 'G006' => 0.90, 'G024' => 0.70],
 
-        // Aturan untuk Layu Fusarium (P002)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P002')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G004')->first()->id, 'bobot' => 0.9]; // Daun layu
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P002')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G027')->first()->id, 'bobot' => 0.7]; // Pertumbuhan terhambat
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P002')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G001')->first()->id, 'bobot' => 0.6]; // Daun menguning
+            // P003: Layu Bakteri -> Fokus pada Layu & Lendir Batang
+            'P003' => ['G006' => 0.95, 'G017' => 0.98, 'G024' => 0.80],
 
-        // Aturan untuk Bercak Daun Cercospora (P003)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P003')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G003')->first()->id, 'bobot' => 0.8]; // Bercak coklat pada daun
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P003')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G010')->first()->id, 'bobot' => 0.7]; // Daun rontok prematur
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P003')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G001')->first()->id, 'bobot' => 0.5]; // Daun menguning
+            // P004: Virus Kuning (Bule) -> Fokus pada Warna Kuning & Keriting
+            'P004' => ['G008' => 0.98, 'G007' => 0.90, 'G023' => 0.80],
 
-        // Aturan untuk Busuk Daun Phytophthora (P004)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P004')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G004')->first()->id, 'bobot' => 0.8]; // Daun layu
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P004')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G016')->first()->id, 'bobot' => 0.7]; // Batang busuk
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P004')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G011')->first()->id, 'bobot' => 0.6]; // Buah busuk
+            // P005: Bercak Daun (Cercospora) -> Fokus pada Bercak Bulat
+            'P005' => ['G002' => 0.90, 'G013' => 0.30],
 
-        // Aturan untuk Kerdil Virus CMV (P005)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P005')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G002')->first()->id, 'bobot' => 0.8]; // Daun keriting
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P005')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G026')->first()->id, 'bobot' => 0.9]; // Tanaman kerdil
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P005')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G014')->first()->id, 'bobot' => 0.7]; // Buah kecil tidak normal
+            // P006: Hama Thrips (Keriting Daun) -> Fokus pada Keriting & Berlubang
+            'P006' => ['G008' => 0.90, 'G010' => 0.85, 'G023' => 0.60],
 
-        // Aturan untuk Busuk Leher Batang (P006)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P006')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G016')->first()->id, 'bobot' => 0.9]; // Batang busuk
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P006')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G004')->first()->id, 'bobot' => 0.8]; // Daun layu
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P006')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G020')->first()->id, 'bobot' => 0.6]; // Bengkak pada batang
+            // P007: Busuk Phytophthora -> Fokus pada Batang Hitam & Busuk Basah
+            'P007' => ['G016' => 0.95, 'G019' => 0.90, 'G011' => 0.50],
 
-        // Aturan untuk Embun Tepung (P007)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P007')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G006')->first()->id, 'bobot' => 0.9]; // Lapisan tepung putih pada daun
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P007')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G001')->first()->id, 'bobot' => 0.7]; // Daun menguning
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P007')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G010')->first()->id, 'bobot' => 0.6]; // Daun rontok prematur
+            // P008: Mosaik Virus -> Fokus pada Corak Mosaik & Buah Abnormal
+            'P008' => ['G004' => 0.95, 'G014' => 0.85, 'G023' => 0.70],
 
-        // Aturan untuk Layu Bakteri (P008)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P008')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G004')->first()->id, 'bobot' => 0.9]; // Daun layu
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P008')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G018')->first()->id, 'bobot' => 0.8]; // Lendir pada batang
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P008')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G030')->first()->id, 'bobot' => 0.7]; // Tanaman mudah layu
+            // P009: Embun Tepung -> Fokus pada Lapisan Putih
+            'P009' => ['G005' => 0.98, 'G001' => 0.40],
 
-        // Aturan untuk Bercak Bakteri (P009)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P009')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G003')->first()->id, 'bobot' => 0.8]; // Bercak coklat pada daun
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P009')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G012')->first()->id, 'bobot' => 0.7]; // Bercak pada buah
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P009')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G009')->first()->id, 'bobot' => 0.6]; // Daun berlubang
+            // P010: Bercak Bakteri -> Fokus pada Bercak Basah & Kasar
+            'P010' => ['G015' => 0.90, 'G002' => 0.70, 'G011' => 0.40],
+        ];
 
-        // Aturan untuk Busuk Akar (P010)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P010')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G021')->first()->id, 'bobot' => 0.9]; // Akar membusuk
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P010')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G004')->first()->id, 'bobot' => 0.8]; // Daun layu
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P010')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G027')->first()->id, 'bobot' => 0.7]; // Pertumbuhan terhambat
+        $dataAturan = [];
 
-        // Aturan untuk Kuning Keriting Virus (P011)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P011')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G001')->first()->id, 'bobot' => 0.8]; // Daun menguning
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P011')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G002')->first()->id, 'bobot' => 0.9]; // Daun keriting
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P011')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G026')->first()->id, 'bobot' => 0.7]; // Tanaman kerdil
+        foreach ($rules as $kodeP => $gejalas) {
+            $penyakitId = DB::table('penyakit')->where('kode_penyakit', $kodeP)->value('id');
 
-        // Aturan untuk Hawar Daun (P012)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P012')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G003')->first()->id, 'bobot' => 0.8]; // Bercak coklat pada daun
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P012')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G007')->first()->id, 'bobot' => 0.7]; // Daun mengering dari ujung
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P012')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G010')->first()->id, 'bobot' => 0.6]; // Daun rontok prematur
+            foreach ($gejalas as $kodeG => $bobot) {
+                $gejalaId = DB::table('gejala')->where('kode_gejala', $kodeG)->value('id');
 
-        // Aturan untuk Busuk Ujung Buah (P013)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P013')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G015')->first()->id, 'bobot' => 0.9]; // Busuk ujung buah
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P013')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G014')->first()->id, 'bobot' => 0.6]; // Buah kecil tidak normal
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P013')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G013')->first()->id, 'bobot' => 0.5]; // Buah rontok prematur
-
-        // Aturan untuk Nematoda Puru Akar (P014)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P014')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G022')->first()->id, 'bobot' => 0.9]; // Bintil pada akar
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P014')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G026')->first()->id, 'bobot' => 0.8]; // Tanaman kerdil
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P014')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G027')->first()->id, 'bobot' => 0.7]; // Pertumbuhan terhambat
-
-        // Aturan untuk Klorosis (P015)
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P015')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G001')->first()->id, 'bobot' => 0.8]; // Daun menguning
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P015')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G029')->first()->id, 'bobot' => 0.7]; // Warna tanaman pucat
-        $aturan[] = ['penyakit_id' => $penyakit->where('kode_penyakit', 'P015')->first()->id, 'gejala_id' => $gejala->where('kode_gejala', 'G027')->first()->id, 'bobot' => 0.6]; // Pertumbuhan terhambat
-
-        // Format data untuk insert
-        $data = [];
-        foreach ($aturan as $item) {
-            $data[] = [
-                'id' => Uuid::uuid4(),
-                'penyakit_id' => $item['penyakit_id'],
-                'gejala_id' => $item['gejala_id'],
-                'bobot' => $item['bobot'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+                if ($penyakitId && $gejalaId) {
+                    $dataAturan[] = [
+                        'id' => Uuid::uuid4()->toString(),
+                        'penyakit_id' => $penyakitId,
+                        'gejala_id' => $gejalaId,
+                        'bobot' => $bobot,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+            }
         }
 
-        DB::table('aturan_penyakit_gejala')->insert($data);
+        DB::table('aturan_penyakit_gejala')->insert($dataAturan);
     }
 }

@@ -110,6 +110,8 @@ class DiagnosaServiceWeb {
                 }
             });
 
+
+
             if (response.success) {
                 return {
                     success: true,

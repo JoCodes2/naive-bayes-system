@@ -28,7 +28,6 @@ class DiagnosaControllerWeb {
 
         // --- Load Parameter Lingkungan ---
         const parameterResult = await this.service.getParameterLingkungan();
-        console.log("Parameter Result:", parameterResult);
 
         if (parameterResult.success) {
             this.parameterData = parameterResult.data;
@@ -41,7 +40,6 @@ class DiagnosaControllerWeb {
 
         // --- Load Gejala ---
         const gejalaResult = await this.service.getGejala();
-        console.log("Gejala Result:", gejalaResult);
 
         if (gejalaResult.success) {
             this.gejalaData = gejalaResult.data;
@@ -55,7 +53,6 @@ class DiagnosaControllerWeb {
         // Panggil setupValidation HANYA jika data parameter sukses dimuat
         if (parameterRendered && typeof $.fn.validate === 'function') {
             this.setupValidation();
-            console.log("Setup Validation berhasil diinisialisasi.");
         } else if (parameterRendered && typeof $.fn.validate !== 'function') {
             console.error("jQuery Validate plugin is not loaded. Cannot set up form validation.");
         }
@@ -211,11 +208,8 @@ class DiagnosaControllerWeb {
 
         html += '</div>';
 
-        console.log("RENDER PARAMETER SUCCESS: HTML generated length:", html.length);
 
         $('#kondisiLingkunganForm').html(html);
-
-        console.log("RENDER PARAMETER SUCCESS: DOM check:", $('#kondisiLingkunganForm').children().length, "children inserted.");
     }
 
     /**
@@ -294,8 +288,6 @@ class DiagnosaControllerWeb {
         });
 
         html += '</div>';
-
-        console.log("RENDER GEJALA SUCCESS: HTML generated length:", html.length);
 
         $('#gejalaList').html(html);
     }

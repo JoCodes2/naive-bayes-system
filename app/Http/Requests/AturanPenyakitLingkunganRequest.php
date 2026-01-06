@@ -30,7 +30,7 @@ class AturanPenyakitLingkunganRequest extends FormRequest
         return [
             'penyakit_id'       => 'required|exists:penyakit,id',
             'parameter_id'      => 'required|exists:parameter_lingkungan,id',
-            'kondisi'           => 'required|string|max:255',
+            'kondisi'           => 'required',
             'bobot_pengaruh'    => 'required|numeric|between:0.1,1',
         ];
     }
@@ -45,7 +45,6 @@ class AturanPenyakitLingkunganRequest extends FormRequest
             'parameter_id.exists'       => 'Parameter lingkungan tidak valid.',
 
             'kondisi.required'          => 'Kondisi wajib diisi.',
-            'kondisi.string'            => 'Kondisi harus berupa teks.',
 
             'bobot_pengaruh.required'   => 'Bobot wajib diisi.',
             'bobot_pengaruh.numeric'    => 'Bobot harus berupa angka.',

@@ -8,29 +8,80 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="card bg-light border-left-primary shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mr-3">
+                                <i class="fas fa-info-circle fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="font-weight-bold mb-1">Panduan Pengisian Aturan Naive Bayes</h6>
+                                <p class="small mb-0 text-muted">
+                                    Gunakan skala bobot berikut untuk menentukan probabilitas hubungan antara penyakit dengan faktor lingkungan/gejala:
+                                </p>
+                            </div>
+                        </div>
 
-                <!-- Card Section -->
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body p-3 text-center">
+                                        <h2 class="font-weight-bold text-danger mb-1">0.8 - 1.0</h2>
+                                        <span class="badge badge-danger px-3 py-2 mb-2 text-dark">Sangat Kuat</span>
+                                        <p class="small text-muted mb-0">Faktor utama yang hampir selalu menyebabkan penyakit muncul.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body p-3 text-center">
+                                        <h2 class="font-weight-bold text-warning mb-1">0.4 - 0.7</h2>
+                                        <span class="badge badge-warning px-3 py-2 mb-2 text-dark">Sedang</span>
+                                        <p class="small text-muted mb-0">Faktor pendukung yang sering ditemukan pada kasus penyakit ini.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body p-3 text-center">
+                                        <h2 class="font-weight-bold text-info mb-1">0.1 - 0.3</h2>
+                                        <span class="badge badge-info px-3 py-2 mb-2 text-dark">Lemah</span>
+                                        <p class="small text-muted mb-0">Faktor kecil yang sesekali muncul namun tidak dominan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 text-right">
+                            <small class="text-danger italic font-weight-bold">
+                                <i class="fas fa-exclamation-triangle mr-1"></i> Hindari mengisi bobot dengan angka 0 karena akan merusak perhitungan Naive Bayes.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">DAFTAR ATURAN PENYAKIT LINGKUNGAN</h5>
-                        {{-- @if (auth()->user()->role === 'admin') --}}
                         <button class="btn btn-primary btn-sm" id="myBtn">
-                            <i class="fas fa-plus"></i> Tambah
+                            <i class="fas fa-plus"></i> Tambah Aturan
                         </button>
-                        {{-- @endif --}}
                     </div>
 
                     <div class="card-body">
                         <div class="table-responsive text-nowrap">
-                            <table id="dataAturanPenyakit" class="table table-borderless">
+                            <table id="dataAturanPenyakit" class="table table-borderless table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Penyakit</th>
-                                        <th>Paremeter</th>
+                                        <th>Parameter</th>
                                         <th>Kondisi</th>
                                         <th>Bobot</th>
-
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -39,10 +90,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <!-- Modal Tambah/Edit -->
@@ -80,11 +129,14 @@
                         </div>
 
                         <!-- KONDISI -->
-                        <div class="mb-3">
-                            <label for="kondisi" class="form-label">Kondisi</label>
-                            <input type="text" class="form-control" name="kondisi" id="kondisi"
-                                placeholder="Contoh: tinggi / rendah / baik">
-                            <small id="kondisi-error" class="text-danger"></small>
+                       <div class="mb-3">
+                            <label for="kondisi" class="form-label">Kondisi Parameter</label>
+                            <select class="form-select @error('kondisi') is-invalid @enderror" name="kondisi" id="kondisi">
+                                <option value="" selected disabled>-- Pilih Kondisi --</option>
+                                <option value="rendah">Rendah</option>
+                                <option value="normal">Normal / Baik</option>
+                                <option value="tinggi">Tinggi</option>
+                            </select>
                         </div>
 
                         <!-- BOBOT -->

@@ -1,21 +1,19 @@
 <?php
-// app/Services/DiagnosaService.php
 
 namespace App\Services;
 
-use App\Models\Penyakit;
-use App\Models\Gejala;
-use App\Models\ParameterLingkungan;
-use App\Models\ParameterLingkunganModel;
 use App\Models\PenyakitModel;
-use App\Models\RiwayatDiagnosa;
 use App\Models\RiwayatDiagnosaModel;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DiagnosaService
 {
+    /**
+     * Melakukan proses diagnosa berdasarkan gejala dan kondisi lingkungan.
+     */
     public function prosesDiagnosa(array $kondisiLingkungan, array $gejalaDipilih): array
     {
+        // Eager loading 'parameter' untuk menghindari N+1 query pada skor lingkungan
         $semuaPenyakit = PenyakitModel::with(['aturanGejala', 'aturanLingkungan.parameter'])->get();
         $hasilDiagnosa = [];
 
@@ -23,7 +21,7 @@ class DiagnosaService
             $skorGejala = $this->hitungSkorGejala($penyakit, $gejalaDipilih);
             $skorLingkungan = $this->hitungSkorLingkungan($penyakit, $kondisiLingkungan);
 
-
+            // Perhitungan skor akhir dengan bobot 70:30
             $skorAkhir = ($skorGejala * 0.7) + ($skorLingkungan * 0.3);
 
             $hasilDiagnosa[] = [
@@ -34,9 +32,9 @@ class DiagnosaService
                 'persentase' => round($skorAkhir * 100, 2)
             ];
         }
-        usort($hasilDiagnosa, function ($a, $b) {
-            return $b['skor_akhir'] <=> $a['skor_akhir'];
-        });
+
+        // Urutkan berdasarkan skor tertinggi
+        usort($hasilDiagnosa, fn($a, $b) => $b['skor_akhir'] <=> $a['skor_akhir']);
 
         return $hasilDiagnosa;
     }
@@ -48,9 +46,9 @@ class DiagnosaService
 
         foreach ($penyakit->aturanGejala as $aturan) {
             if (in_array($aturan->gejala_id, $gejalaDipilih)) {
-                $skor += $aturan->bobot;
+                $skor += (float) $aturan->bobot;
             }
-            $totalBobot += $aturan->bobot;
+            $totalBobot += (float) $aturan->bobot;
         }
 
         return $totalBobot > 0 ? $skor / $totalBobot : 0;
@@ -62,43 +60,42 @@ class DiagnosaService
         $skor = 0;
 
         foreach ($penyakit->aturanLingkungan as $aturan) {
-            $parameter = $aturan->parameter->nama_parameter;
-            $nilaiInput = $kondisiLingkungan[$this->convertToSnakeCase($parameter)] ?? null;
+            $parameterModel = $aturan->parameter; // Mengambil data dari eager load
+            if (!$parameterModel) continue;
 
-            if ($nilaiInput && $this->cocokKondisiLingkungan($nilaiInput, $aturan->kondisi, $parameter)) {
-                $skor += $aturan->bobot_pengaruh;
+            $key = $this->convertToSnakeCase($parameterModel->nama_parameter);
+            $nilaiInput = $kondisiLingkungan[$key] ?? null;
+
+            // Pastikan nilaiInput tidak null sebelum mencocokkan kondisi
+            if ($nilaiInput !== null && $this->cocokKondisiLingkungan($nilaiInput, $aturan->kondisi, $parameterModel)) {
+                $skor += (float) $aturan->bobot_pengaruh;
             }
-            $totalBobot += $aturan->bobot_pengaruh;
+            $totalBobot += (float) $aturan->bobot_pengaruh;
         }
 
         return $totalBobot > 0 ? $skor / $totalBobot : 0;
     }
 
-    private function convertToSnakeCase(string $text): string
+    private function cocokKondisiLingkungan($nilaiInput, string $kondisi, $param): bool
     {
-        return strtolower(str_replace(' ', '_', $text));
-    }
-
-    private function cocokKondisiLingkungan($nilaiInput, string $kondisi, string $parameter): bool
-    {
-
-        $param = ParameterLingkunganModel::where('nama_parameter', $parameter)->first();
-
-        if (!$param) return false;
-
-        $minIdeal = $param->nilai_ideal_min;
-        $maxIdeal = $param->nilai_ideal_max;
+        $minIdeal = (float) $param->nilai_ideal_min;
+        $maxIdeal = (float) $param->nilai_ideal_max;
 
         switch ($kondisi) {
             case 'tinggi':
                 return $nilaiInput > $maxIdeal;
             case 'rendah':
                 return $nilaiInput < $minIdeal;
-            case 'optimal':
+            case 'normal': // Sesuai dengan data Seeder Anda
                 return $nilaiInput >= $minIdeal && $nilaiInput <= $maxIdeal;
             default:
                 return false;
         }
+    }
+
+    private function convertToSnakeCase(string $text): string
+    {
+        return strtolower(str_replace(' ', '_', $text));
     }
 
     public function simpanRiwayat(array $kondisiLingkungan, array $gejalaDipilih, array $hasilTerbaik): RiwayatDiagnosaModel
@@ -110,7 +107,7 @@ class DiagnosaService
             'tingkat_kepercayaan' => $hasilTerbaik['persentase'],
             'rekomendasi_perawatan' => $hasilTerbaik['penyakit']->solusi_perawatan,
             'rekomendasi_pencegahan' => $hasilTerbaik['penyakit']->tindakan_pencegahan,
-            'catatan_tambahan' => "Diagnosa berdasarkan analisis gejala dan kondisi lingkungan dengan tingkat kepercayaan {$hasilTerbaik['persentase']}%"
+            'catatan_tambahan' => "Diagnosa otomatis: " . $hasilTerbaik['penyakit']->nama_penyakit . " dengan keyakinan " . $hasilTerbaik['persentase'] . "%"
         ]);
     }
 }

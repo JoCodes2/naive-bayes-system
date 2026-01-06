@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('penyakit_id')->constrained('penyakit')->onDelete('cascade');
             $table->foreignUuid('parameter_id')->constrained('parameter_lingkungan')->onDelete('cascade');
-            $table->string('kondisi');
+            $table->enum('kondisi', ['rendah', 'normal', 'tinggi'])->default('normal');
             $table->decimal('bobot_pengaruh', 3, 2)->default(0.3);
             $table->timestamps();
         });
