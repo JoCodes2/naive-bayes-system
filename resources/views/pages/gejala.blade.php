@@ -13,7 +13,7 @@
     >
         <div class="py-0">
             {{-- Table --}}
-            <x-base-table initId="gejalaTable" :columns="['No', 'Kode Gejala', 'Kategori Gejala', 'Deskripsi', 'Aksi']">
+            <x-base-table initId="gejalaTable" :columns="['No', 'Kode Gejala', 'Kategori Gejala','Nama Gejala', 'Deskripsi', 'Aksi']">
                 <tbody>
 
                 </tbody>
@@ -52,10 +52,16 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="deskripsi_gejala">Deskripsi</label>
-            <textarea class="form-control" id="deskripsi_gejala" name="deskripsi_gejala"
+            <label for="nama_gejala">Deskripsi</label>
+            <input class="form-control" id="nama_gejala" name="nama_gejala"
+                placeholder="Masukkan nama gejala"></input>
+            <small class="text-danger" id="nama_gejala-error"></small>
+        </div>
+        <div class="form-group mb-3">
+            <label for="deskripsi">Deskripsi</label>
+            <textarea class="form-control" id="deskripsi" name="deskripsi"
                 placeholder="Masukkan deskripsi gejala"></textarea>
-            <small class="text-danger" id="deskripsi_gejala-error"></small>
+            <small class="text-danger" id="deskripsi-error"></small>
         </div>
 
     </x-base-form>

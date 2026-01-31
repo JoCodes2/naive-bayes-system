@@ -11,26 +11,17 @@ class PenyakitModel extends Model
     use HasFactory, HasUuids;
 
     protected $table = 'penyakit';
+    protected $fillable = ['id', 'kode_penyakit', 'nama_penyakit', 'deskripsi', 'solusi_treatment', 'pencegahan', 'created_at', 'updated_at'];
 
-    protected $fillable = [
-        'id',
-        'kode_penyakit',
-        'nama_penyakit',
-        'deskripsi',
-        'solusi_perawatan',
-        'tindakan_pencegahan',
-        'faktor_risiko',
-        'created_at',
-        'updated_at'
-    ];
-
-    public function aturanGejala()
+    // Relasi ke Dataset Training
+    public function datasets()
     {
-        return $this->hasMany(AturanGejalaModel::class, 'penyakit_id');
+        return $this->hasMany(DataTrainingModel::class);
     }
 
-    public function aturanLingkungan()
+    // Relasi ke Hasil Diagnosa
+    public function riwayatDiagnosa()
     {
-        return $this->hasMany(AturanPenyakitLingkunganModel::class, 'penyakit_id');
+        return $this->hasMany(HasilDiagnosaModel::class, 'penyakit_prediksi');
     }
 }

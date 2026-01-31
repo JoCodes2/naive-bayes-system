@@ -3,6 +3,7 @@
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\CMS\AturanGejalaController;
 use App\Http\Controllers\CMS\AturanPenyakitLingkunganController;
+use App\Http\Controllers\CMS\DataTrainingController;
 use App\Http\Controllers\CMS\DiagnosaController;
 use App\Http\Controllers\CMS\GejalaController;
 use App\Http\Controllers\CMS\ParameterLingkunganController;
@@ -35,24 +36,6 @@ Route::prefix('naive-bayes')->group(function () {
         Route::delete('/delete/{id}', 'deleteData');
     });
 
-    // aturan gejala
-    Route::prefix('aturan-gejala')->controller(AturanGejalaController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
-    });
-
-    // aturan Penyakit
-    Route::prefix('aturan-penyakit')->controller(AturanPenyakitLingkunganController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
-    });
-
     // Gejala
     Route::prefix('gejala')->controller(GejalaController::class)->group(function () {
         Route::get('/', 'getAllData');
@@ -70,6 +53,13 @@ Route::prefix('naive-bayes')->group(function () {
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');
     });
+    Route::prefix('data-set')->controller(DataTrainingController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
 
     // Diagnosa
     Route::prefix('diagnosa')->controller(DiagnosaController::class)->group(function () {
@@ -81,22 +71,10 @@ Route::prefix('naive-bayes')->group(function () {
 
 Route::middleware(['auth', 'web'])->group(function () {
 
-    //admin/view
-    Route::get('/dashboard', function () {
-        return view('pages.diagnosa');
-    });
     Route::get('/penyakit', function () {
         return view('admin.penyakit');
     });
-    Route::get('/diagnosa-penyakit', function () {
-        return view('admin.diagnosa_penyakit');
-    });
-    Route::get('/aturan-gejala', function () {
-        return view('admin.aturan_gejala');
-    });
-    Route::get('/aturan-penyakit-lingkungan', function () {
-        return view('admin.aturan_penyakit_lingkungan');
-    });
+
     //pagesview
     Route::get('/gejala', function () {
         return view('pages.gejala');
@@ -104,8 +82,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/parameter-lingkungan', function () {
         return view('pages.lingkungan');
     });
-    Route::get('/riwayat', function () {
+    Route::get('/dashboard', function () {
         return view('pages.riwayat');
+    });
+    Route::get('/data-set', function () {
+        return view('pages.data-set');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

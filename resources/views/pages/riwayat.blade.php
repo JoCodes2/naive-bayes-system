@@ -12,14 +12,23 @@
     >
         <div class="py-0">
             {{-- Table --}}
-            <x-base-table initId="riwayatTabel" :columns="['No', 'Tanggal Diagnosa', 'Kondisi Lingkungan', 'Gejala Tanaman','Hasil Diagnosa ','Tingkat Kepercayaan', 'Rekomendasi Perawatan', 'Rekomendasi Pencegahan', 'Catatan Tambahan']">
+                    {{-- Table --}}
+            <x-base-table initId="riwayatTabel" :columns="[
+                'No',
+                'Tanggal',
+                'Nama Pengguna',
+                'Inputan (Lgk/Gjl)',
+                'Hasil Diagnosa',
+                'Kepercayaan',
+            ]">
                 <tbody>
-
+                    {{-- Data akan diisi oleh riwayat.controller.js --}}
                 </tbody>
             </x-base-table>
 
         </div>
     </x-base-body>
+
 @endsection
 @section('scripts')
     <script type="module" src="{{ asset('js/controllers/riwayat.controller.js')}}"></script>

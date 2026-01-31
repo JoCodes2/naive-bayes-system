@@ -17,24 +17,22 @@ class DiagnosaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kondisi_lingkungan' => 'required|array',
-            'kondisi_lingkungan.suhu_udara' => 'required|numeric|min:0|max:50',
-            'kondisi_lingkungan.kelembapan_udara' => 'required|numeric|min:0|max:100',
-            'kondisi_lingkungan.ph_tanah' => 'required|numeric|min:0|max:14',
-            'kondisi_lingkungan.intensitas_cahaya' => 'required|numeric|min:0',
-            'kondisi_lingkungan.curah_hujan' => 'required|numeric|min:0',
-            'kondisi_lingkungan.kelembapan_tanah' => 'required|numeric|min:0|max:100',
+            'nama_petani' => 'required',
             'gejala' => 'required|array|min:1',
-            'gejala.*' => 'exists:gejala,id'
+            'gejala.*' => 'string|exists:gejala,kode_gejala',
+
+            'lingkungan' => 'required|array|min:1',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'kondisi_lingkungan.required' => 'Data kondisi lingkungan harus diisi',
-            'gejala.required' => 'Pilih minimal 1 gejala tanaman',
-            'gejala.min' => 'Pilih minimal 1 gejala tanaman'
+            'nama_petani.required' => 'Nama harus diisi.',
+            'gejala.required' => 'Pilih minimal satu gejala yang terlihat pada tanaman.',
+            'gejala.*.exists' => 'Kode gejala tidak valid atau tidak terdaftar.',
+            'lingkungan.required' => 'Pilih kondisi lingkungan/sensor saat ini.',
+            'lingkungan.array' => 'Format data lingkungan harus berupa objek parameter.',
         ];
     }
     protected function failedValidation(Validator $validator)

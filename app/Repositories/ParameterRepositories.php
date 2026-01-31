@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\ParameterRequest;
 use App\Interfaces\ParameterInterfaces;
+use App\Models\KondisiLingkunganModel;
 use App\Models\ParameterLingkunganModel;
 use App\Traits\HttpResponseTraits;
 
@@ -11,7 +12,7 @@ class ParameterRepositories implements ParameterInterfaces
 {
     use HttpResponseTraits;
     protected $parameterModel;
-    public function __construct(ParameterLingkunganModel $parameterModel)
+    public function __construct(KondisiLingkunganModel $parameterModel)
     {
         $this->parameterModel = $parameterModel;
     }
@@ -37,9 +38,9 @@ class ParameterRepositories implements ParameterInterfaces
             $data = new $this->parameterModel;
             $data->nama_parameter = $request->input('nama_parameter');
             $data->satuan = $request->input('satuan');
-            $data->kategori = $request->input('kategori');
-            $data->nilai_ideal_min = $request->input('nilai_ideal_min');
-            $data->nilai_ideal_max = $request->input('nilai_ideal_max');
+            $data->nilai_label = $request->input('nilai_label');
+            $data->min_value = $request->input('min_value');
+            $data->max_value = $request->input('max_value');
             $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);
@@ -56,9 +57,9 @@ class ParameterRepositories implements ParameterInterfaces
             }
             $data->nama_parameter = $request->input('nama_parameter');
             $data->satuan = $request->input('satuan');
-            $data->kategori = $request->input('kategori');
-            $data->nilai_ideal_min = $request->input('nilai_ideal_min');
-            $data->nilai_ideal_max = $request->input('nilai_ideal_max');
+            $data->nilai_label = $request->input('nilai_label');
+            $data->min_value = $request->input('min_value');
+            $data->max_value = $request->input('max_value');
             $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);

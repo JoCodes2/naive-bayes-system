@@ -7,6 +7,9 @@ class parameterService {
                 data,
                 processData: false,
                 contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: (response) => resolve(response),
                 error: (error) => reject(error),
             });
@@ -22,34 +25,43 @@ class parameterService {
 
         try {
             const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/`, 'GET');
-            console.log(responseData);
 
             if (responseData && responseData.data) {
-                console.log();
-
                 let tableBody = '';
+
+                // TIPS: Jika backend belum mengurutkan, kita urutkan manual di sini (optional)
+                responseData.data.sort((a, b) => a.nama_parameter.localeCompare(b.nama_parameter));
+
                 responseData.data.forEach((item, index) => {
+                    let btnClass = 'btn-secondary';
+                    if (item.nilai_label === 'rendah') btnClass = 'btn-primary';
+                    if (item.nilai_label === 'normal') btnClass = 'btn-success';
+                    if (item.nilai_label === 'tinggi') btnClass = 'btn-danger';
+
                     tableBody += `
                     <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.nama_parameter}</td>
-                        <td>${item.satuan}</td>
-                        <td>${item.kategori}</td>
-                        <td>${item.nilai_ideal_min}</td>
-                        <td>${item.nilai_ideal_max}</td>
-                        <td>${item.deskripsi}</td>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="fw-bold">${item.nama_parameter}</td>
+                        <td class="text-center">${item.satuan ?? '-'}</td>
                         <td class="text-center">
-                           <div class="d-flex gap-2">
-                                <a href="#" class="edit-parameter" data-id="${item.id}" title="Edit">
+                            <button type="button" class="btn btn-sm ${btnClass}" style="cursor: default; pointer-events: none; min-width: 90px;">
+                                ${item.nilai_label.toUpperCase()}
+                            </button>
+                        </td>
+                         <td class="text-center">${item.deskripsi ?? '-'}</td>
+                        <td class="text-center text-primary fw-bold">${item.min_value}</td>
+                        <td class="text-center text-danger fw-bold">${item.max_value}</td>
+                        <td class="text-center">
+                           <div class="d-flex gap-2 justify-content-center">
+                                <a href="javascript:void(0)" class="edit-parameter btn btn-icon btn-round btn-primary btn-sm" data-id="${item.id}">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <a href="#" class="delete-parameter" data-id="${item.id}" title="Hapus">
+                                <a href="javascript:void(0)" class="delete-parameter btn btn-icon btn-round btn-danger btn-sm" data-id="${item.id}">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
                         </td>
-                    </tr>
-                    `;
+                    </tr>`;
                 });
 
                 $("#parameterTable tbody").html(tableBody);
@@ -58,12 +70,13 @@ class parameterService {
                     paging: true,
                     searching: true,
                     responsive: true,
-                    order: [[0, 'asc']],
-                    pageLength: 5,
-                    lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+                    // Urutkan berdasarkan kolom Nama Parameter (indeks 1) secara ASC
+                    order: [[1, 'asc']],
+                    pageLength: 15, // Set ke 15 agar semua range parameter (3 label x 5-6 param) terlihat
+                    columnDefs: [
+                        { targets: [0, 3, 6], orderable: false } // No, Label, dan Aksi tidak perlu di-sort
+                    ]
                 });
-            } else {
-                console.error('Response data is invalid:', responseData);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -71,11 +84,16 @@ class parameterService {
     }
 
     async upsertData(e, checkingEdit) {
-        let submitButton = $(e.target).find(':submit');
+        let submitButton = $('#btnSimpanParameter'); // Sesuai ID di Blade
 
         try {
             const formData = new FormData(e.target);
             let responseData;
+
+            // Bersihkan error validasi sebelumnya
+            $('.text-danger').text("");
+            $('.form-control').removeClass('is-invalid');
+
             if (checkingEdit()) {
                 const id = $('#id').val();
                 responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/update/${id}`, 'POST', formData);
@@ -84,58 +102,57 @@ class parameterService {
                 responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/create`, 'POST', formData);
             }
 
-            successAlert().then(() => {
-                realoadBrowser();
+            successAlert("Data berhasil disimpan").then(() => {
                 $('#modalParameter').modal('hide');
+                location.reload(); // Refresh untuk update tabel
             });
 
         } catch (error) {
-
             submitButton.attr('disabled', false);
 
-            if (error.status === 422 || error.response?.status === 422) {
-                warningAlert();
+            if (error.status === 422) {
+                const errors = error.responseJSON.data; // Sesuaikan dengan PenyakitRequest tadi
+                $.each(errors, function (key, value) {
+                    $(`#${key}-error`).text(value[0]);
+                    $(`#${key}`).addClass('is-invalid');
+                });
+                warningAlert("Mohon periksa kembali inputan Anda");
                 return;
             }
             errorAlert();
         }
-
     }
-
 
     async getDataById(id, checkingEdit) {
         try {
             const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/get/${id}`, 'GET');
-            console.log(responseData);
-
             const data = responseData.data;
 
             $('#modalParameter').modal('show');
+            $('#modalParameter .modal-title').text('Edit Parameter Lingkungan');
 
+            // Map data ke field baru
             $('#id').val(data.id);
             $('#nama_parameter').val(data.nama_parameter);
             $('#satuan').val(data.satuan);
-            $('#kategori').val(data.kategori);
-            $('#nilai_ideal_min').val(data.nilai_ideal_min);
-            $('#nilai_ideal_max').val(data.nilai_ideal_max);
-            $('#deskripsi').val(data.deskripsi);
+            $('#nilai_label').val(data.nilai_label);
+            $('#min_value').val(data.min_value);
+            $('#max_value').val(data.max_value);
 
             checkingEdit();
         } catch (error) {
-            console.log(error);
+            console.error('Error fetching by ID:', error);
         }
     }
-
 
     async deleteData(id) {
         try {
             const result = await confirmDeleteAlert();
             if (result.isConfirmed) {
                 const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/parameter-lingkungan/delete/${id}`, 'DELETE');
-                console.log(responseData);
-                if (responseData.code === 200) {
-                    await successAlert().then(() => {
-                        realoadBrowser();
+                if (responseData.code === 200 || responseData.status === 'success') {
+                    await successAlert("Data berhasil dihapus").then(() => {
+                        location.reload();
                     });
                 } else {
                     errorAlert();
@@ -145,7 +162,6 @@ class parameterService {
             errorAlert();
         }
     }
-
 }
 
 export default parameterService;

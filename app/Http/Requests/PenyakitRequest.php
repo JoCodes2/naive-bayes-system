@@ -30,9 +30,8 @@ class PenyakitRequest extends FormRequest
             'kode_penyakit' => 'required|unique:penyakit,kode_penyakit,' . $id,
             'nama_penyakit' => 'required',
             'deskripsi' => 'required',
-            'solusi_perawatan' => 'required',
-            'tindakan_pencegahan' => 'required',
-            'faktor_risiko' => 'required',
+            'solusi_treatment' => 'required',
+            'pencegahan' => 'required',
         ];
     }
 
@@ -44,9 +43,8 @@ class PenyakitRequest extends FormRequest
 
             'nama_penyakit.required' => 'Nama penyakit wajib diisi.',
             'deskripsi.required' => 'Deskripsi penyakit wajib diisi.',
-            'solusi_perawatan.required' => 'Solusi perawatan wajib diisi.',
-            'tindakan_pencegahan.required' => 'Tindakan pencegahan wajib diisi.',
-            'faktor_risiko.required' => 'Faktor risiko wajib diisi.',
+            'solusi_treatment.required' => 'Solusi perawatan wajib diisi.',
+            'pencegahan.required' => 'Tindakan pencegahan wajib diisi.',
         ];
     }
 

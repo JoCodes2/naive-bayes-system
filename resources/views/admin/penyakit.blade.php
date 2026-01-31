@@ -31,7 +31,6 @@
                                         <th style="width: 300px;">Deskripsi</th>
                                         <th style="width: 300px;">Solusi Perawatan</th>
                                         <th style="width: 300px;">Tindakan Pencegahan</th>
-                                        <th style="width: 250px;">Faktor Risiko</th>
                                         <th style="width: 100px;">Action</th>
                                     </tr>
                                 </thead>
@@ -49,72 +48,61 @@
     </div>
 
     <!-- Modal Tambah/Edit -->
-    <div class="modal fade" id="upsertDataModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="upsertDataForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Tambah Penyakit</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
+<div class="modal fade" id="upsertDataModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="upsertDataForm">
+                @csrf <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Tambah Penyakit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-                    <div class="modal-body">
+                <div class="modal-body">
+                    <input type="hidden" id="id" name="id">
 
-                        <input type="hidden" id="id" name="id">
-
-                        <div class="row g-3">
-
-                            <div class="col-md-6">
-                                <label for="kode_penyakit" class="form-label">Kode Penyakit</label>
-                                <input type="text" class="form-control" name="kode_penyakit" id="kode_penyakit"
-                                    placeholder="Masukkan kode penyakit">
-                                <small id="kode_penyakit-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="nama_penyakit" class="form-label">Nama Penyakit</label>
-                                <input type="text" class="form-control" name="nama_penyakit" id="nama_penyakit"
-                                    placeholder="Masukkan nama penyakit">
-                                <small id="nama_penyakit-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="deskripsi" class="form-label">Deskripsi</label>
-                                <textarea class="form-control" name="deskripsi" id="deskripsi" rows="2" placeholder="Masukkan deskripsi penyakit"></textarea>
-                                <small id="deskripsi-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="solusi_perawatan" class="form-label">Solusi Perawatan</label>
-                                <textarea name="solusi_perawatan" class="form-control list-textarea" id="solusi_perawatan"></textarea>
-                                <small id="solusi_perawatan-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="tindakan_pencegahan" class="form-label">Tindakan Pencegahan</label>
-                                <textarea name="tindakan_pencegahan" class="form-control list-textarea" id="tindakan_pencegahan"></textarea>
-                                <small id="tindakan_pencegahan-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="faktor_risiko" class="form-label">Faktor Resiko</label>
-                                <textarea name="faktor_risiko" class="form-control list-textarea" id="faktor_risiko"></textarea>
-                                <small id="faktor_risiko-error" class="text-danger"></small>
-                            </div>
-
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="kode_penyakit" class="form-label">Kode Penyakit</label>
+                            <input type="text" class="form-control" name="kode_penyakit" id="kode_penyakit"
+                                placeholder="Masukkan kode penyakit">
+                            <small id="kode_penyakit-error" class="text-danger"></small>
                         </div>
 
-                    </div>
+                        <div class="col-md-6">
+                            <label for="nama_penyakit" class="form-label">Nama Penyakit</label>
+                            <input type="text" class="form-control" name="nama_penyakit" id="nama_penyakit"
+                                placeholder="Masukkan nama penyakit">
+                            <small id="nama_penyakit-error" class="text-danger"></small>
+                        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" id="simpanData" class="btn btn-primary">Simpan</button>
-                    </div>
+                        <div class="col-12">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" name="deskripsi" id="deskripsi" rows="2" placeholder="Masukkan deskripsi penyakit"></textarea>
+                            <small id="deskripsi-error" class="text-danger"></small>
+                        </div>
 
-                </form>
-            </div>
+                        <div class="col-12">
+                            <label for="solusi_treatment" class="form-label">Solusi Perawatan</label>
+                            <textarea name="solusi_treatment" class="form-control list-textarea" id="solusi_treatment" rows="3" placeholder="Gunakan list 1. 2. 3."></textarea>
+                            <small id="solusi_treatment-error" class="text-danger"></small>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="pencegahan" class="form-label">Tindakan Pencegahan</label>
+                            <textarea name="pencegahan" class="form-control list-textarea" id="pencegahan" rows="3" placeholder="Langkah pencegahan..."></textarea>
+                            <small id="pencegahan-error" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="simpanData" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -148,25 +136,29 @@
                         let tableBody = "";
 
                         if (userData.length > 0) {
+                            // 1. Sortir data secara manual (P01, P02, dst)
+                            userData.sort((a, b) => {
+                                return (a.kode_penyakit || '').localeCompare(b.kode_penyakit || '', undefined, {
+                                    numeric: true,
+                                    sensitivity: 'base'
+                                });
+                            });
+
                             $.each(userData, function(index, item) {
                                 tableBody += "<tr>";
                                 tableBody += "<td>" + (index + 1) + "</td>";
-                                tableBody += "<td>" + (item.kode_penyakit || '-') + "</td>";
+                                tableBody += "<td><span class='badge bg-light-primary text-primary font-bold'>" + (item.kode_penyakit || '-') + "</span></td>";
                                 tableBody += "<td>" + (item.nama_penyakit || '-') + "</td>";
-                                tableBody += "<td style='text-align: left;'>" + (item
-                                    .deskripsi ?? '-') + "</td>";
-                                tableBody += "<td>" + formatList(item.solusi_perawatan) +
-                                    "</td>";
-                                tableBody += "<td>" + formatList(item.tindakan_pencegahan) +
-                                    "</td>";
-                                tableBody += "<td>" + formatList(item.faktor_risiko) + "</td>";
+                                tableBody += "<td style='text-align: left;'>" + (item.deskripsi ?? '-') + "</td>";
+                                tableBody += "<td>" + formatList(item.solusi_treatment) + "</td>";
+                                tableBody += "<td>" + formatList(item.pencegahan) + "</td>";
                                 tableBody += `
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
-                                        <a href="#" class="edit-btn" data-id="${item.id}">
+                                        <a href="#" class="edit-btn text-warning" data-id="${item.id}">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <a href="#" class="delete-confirm" data-id="${item.id}">
+                                        <a href="#" class="delete-confirm text-danger" data-id="${item.id}">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -177,14 +169,18 @@
 
                         $("#tBody").html(tableBody);
 
-                        // Initialize DataTable
+                        // 2. Inisialisasi DataTable dengan urutan kolom kode (kolom index ke-1)
                         $('#dataPenyakit').DataTable({
                             destroy: true,
                             paging: true,
                             searching: true,
                             ordering: true,
                             info: true,
-                            order: [],
+                            // Kolom index 1 adalah 'Kode Penyakit', diurutkan secara Ascending (asc)
+                            order: [[1, 'asc']],
+                            columnDefs: [
+                                { targets: [4, 5, 6], orderable: false } // Matikan sorting untuk kolom deskripsi/aksi
+                            ]
                         });
                     },
                     error: function() {
@@ -225,23 +221,25 @@
 
                         getData();
                     },
-
                     error: function(xhr) {
-                        $('.text-danger').text(""); // reset error dulu
+                        // 1. Bersihkan semua pesan error lama
+                        $('.text-danger').text("");
+                        $('.form-control').removeClass('is-invalid');
 
                         if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
+                            // Ambil dari xhr.responseJSON.data (karena di Backend Anda pakai key 'data')
+                            let response = xhr.responseJSON;
+                            let errors = response.data;
 
                             $.each(errors, function(key, value) {
+                                // Gunakan selector ID untuk menampilkan pesan
                                 $("#" + key + "-error").text(value[0]);
-                            });
 
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Gagal",
-                                text: "Terjadi kesalahan server!",
+                                // Tambahkan class border merah pada input terkait
+                                $("#" + key).addClass('is-invalid');
                             });
+                        } else {
+                            Swal.fire("Gagal", "Terjadi kesalahan pada server", "error");
                         }
                     }
                 });
@@ -264,10 +262,10 @@
                         $('#kode_penyakit').val(response.data.kode_penyakit);
                         $('#nama_penyakit').val(response.data.nama_penyakit);
                         $('#deskripsi').val(response.data.deskripsi);
-                        $('textarea[name="solusi_perawatan"]').val(response.data
-                            .solusi_perawatan);
-                        $('textarea[name="tindakan_pencegahan"]').val(response.data
-                            .tindakan_pencegahan);
+                        $('textarea[name="solusi_treatment"]').val(response.data
+                            .solusi_treatment);
+                        $('textarea[name="pencegahan"]').val(response.data
+                            .pencegahan);
                         $('textarea[name="faktor_risiko"]').val(response.data.faktor_risiko);
                     },
                     error: function(xhr, status, error) {
@@ -277,11 +275,33 @@
             });
 
             // Show modal tambah
+            // --- 1. Saat Tombol Tambah diklik ---
             $(document).on('click', '#myBtn', function() {
-                $('#upsertDataForm')[0].reset();
-                $('.summernote').summernote('code', '');
-                $('#id').val('');
+                $('#upsertDataForm')[0].reset(); // Reset isi input
+                $('#id').val(''); // Pastikan ID kosong (untuk mode Create)
+                $('#modalTitle').text('Tambah Penyakit'); // Reset judul modal
+
+                // Hapus sisa-sisa validasi
+                $('.form-control').removeClass('is-invalid'); // Hapus border merah
+                $('.text-danger').text(''); // Hapus tulisan pesan error
+
                 $('#upsertDataModal').modal('show');
+            });
+
+            // --- 2. Saat Modal Ditutup (Hidden) ---
+            // Ini sangat penting agar jika user klik silang/batal, modal kembali suci
+            $('#upsertDataModal').on('hidden.bs.modal', function() {
+                $('#upsertDataForm')[0].reset();
+                $('#id').val('');
+
+                // Reset visual validasi
+                $('.form-control').removeClass('is-invalid');
+                $('.text-danger').text('');
+
+                // Jika Anda menggunakan summernote (opsional berdasarkan code Anda)
+                if ($('.summernote').length) {
+                    $('.summernote').summernote('code', '');
+                }
             });
 
             // Delete data button click handler

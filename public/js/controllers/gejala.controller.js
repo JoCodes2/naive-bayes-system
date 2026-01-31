@@ -10,7 +10,7 @@ $(document).ready(function () {
         $('#id').val('');
 
         $('#formGejala .form-control').removeClass('is-valid is-invalid');
-        $('#kategori-error, #deskripsi_gejala-error, #kode_gejala').text('');
+        $('#kategori-error, #nama_gejala-error, #kode_gejala').text('');
 
         $('#modalGejala').modal('show');
     });
@@ -18,12 +18,12 @@ $(document).ready(function () {
         $('#formGejala').validate({
             rules: {
                 kode_gejala: { required: true },
-                deskripsi_gejala: { required: true },
+                nama_gejala: { required: true },
                 kategori: { required: true },
             },
             messages: {
                 kode_gejala: { required: "Form tidak boleh kosong" },
-                deskripsi_gejala: { required: "Form tidak boleh kosong" },
+                nama_gejala: { required: "Form tidak boleh kosong" },
                 kategori: { required: "Form tidak boleh kosong" },
             },
             highlight: function (element) {
@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     validation();
 
-    $('#kode_gejala, #kategori, #deskripsi_gejala').on('input', function () {
+    $('#kode_gejala, #kategori, #nama_gejala').on('input', function () {
         $(this).valid();
     });
 

@@ -1,44 +1,50 @@
 import parameterService from "../services/parameter.service.js";
 
-
 $(document).ready(function () {
     const parameter = new parameterService();
     parameter.getAllData();
 
+    // Reset validasi visual dan pesan error
+    function resetValidationState() {
+        $('#formParameter .form-control').removeClass('is-valid is-invalid');
+        // Bersihkan semua elemen pesan error berdasarkan ID yang baru
+        $('#nama_parameter-error, #satuan-error, #nilai_label-error, #min_value-error, #max_value-error')
+            .text('');
+        // Hapus class error bawaan jquery validation jika ada
+        $('.error').remove();
+    }
+
     $('#btnTambahParameter').on('click', function () {
         $('#formParameter')[0].reset();
         $('#id').val('');
-
-        $('#formParameter .form-control').removeClass('is-valid is-invalid');
-        $('#nama_parameter-error, #satuan-error, #kategori-error, #nilai_ideal_min-error, #nilai_ideal_max-error, #deskripsi-error')
-            .text('');
-
+        resetValidationState();
         $('#modalParameter').modal('show');
     });
 
+    // Validasi menggunakan jQuery Validation Plugin
     function validation() {
         $('#formParameter').validate({
             rules: {
                 nama_parameter: { required: true },
-                satuan: { required: false },
-                kategori: { required: true },
-                nilai_ideal_min: { number: true, required: true },
-                nilai_ideal_max: {
+                satuan: { required: true },
+                nilai_label: { required: true },
+                min_value: { number: true, required: true },
+                max_value: {
                     number: true,
                     required: true,
                     greaterThanMin: true
-                },
-                deskripsi: { required: false }
+                }
             },
             messages: {
-                nama_parameter: { required: "Nama parameter tidak boleh kosong" },
-                kategori: { required: "Kategori wajib dipilih" },
-                nilai_ideal_min: { number: "Harus berupa angka", required: 'Form wajib diisi' },
-                nilai_ideal_max: {
+                nama_parameter: { required: "Nama parameter wajib diisi" },
+                nilai_label: { required: "Pilih label kondisi (rendah/normal/tinggi)" },
+                min_value: { number: "Harus berupa angka", required: 'Batas minimal wajib diisi' },
+                max_value: {
                     number: "Harus berupa angka",
-                    required: 'Form wajib diisi',
-                    greaterThanMin: "Nilai maksimal harus lebih besar atau sama dengan nilai minimal"
-                }
+                    required: 'Batas maksimal wajib diisi',
+                    greaterThanMin: "Nilai maksimal harus lebih besar dari nilai minimal"
+                },
+                satuan: { required: "Satuan wajib diisi" },
             },
             highlight: function (element) {
                 $(element).addClass('is-invalid').removeClass('is-valid');
@@ -47,39 +53,48 @@ $(document).ready(function () {
                 $(element).removeClass('is-invalid').addClass('is-valid');
             },
             errorPlacement: function (error, element) {
-                error.addClass('text-danger text-sm');
-                error.insertAfter(element);
+                // Mencari elemen small atau div yang ID-nya [name]-error
+                let errorId = $(element).attr('name') + "-error";
+                if ($("#" + errorId).length) {
+                    $("#" + errorId).html(error);
+                } else {
+                    error.addClass('text-danger text-sm');
+                    error.insertAfter(element);
+                }
             }
         });
     }
 
+    // Method custom untuk membandingkan min dan max
     $.validator.addMethod("greaterThanMin", function (value, element) {
-        const min = parseFloat($('#nilai_ideal_min').val());
+        const min = parseFloat($('#min_value').val());
         const max = parseFloat(value);
-
-        if (!value || !min) return true;
-
-        return max >= min;
+        if (isNaN(min) || isNaN(max)) return true;
+        return max > min;
     });
 
     validation();
 
-    $('#nama_parameter, #kategori, #nilai_ideal_min, #nilai_ideal_max').on('input change', function () {
+    // Trigger validasi saat input berubah
+    $('#nama_parameter, #nilai_label, #min_value, #max_value').on('input change', function () {
         $(this).valid();
     });
 
     function checkingEdit() {
-        return $('#id').val() ? true : false;
+        return $('#id').val() !== "" && $('#id').val() !== null;
     }
 
     $('#formParameter').submit(function (e) {
         e.preventDefault();
-        parameter.upsertData(e, checkingEdit);
+        // Hanya kirim jika jquery validation valid
+        if ($(this).valid()) {
+            parameter.upsertData(e, checkingEdit);
+        }
     });
-
 
     $(document).on('click', '.edit-parameter', function () {
         const id = $(this).data('id');
+        resetValidationState();
         parameter.getDataById(id, checkingEdit);
     });
 
@@ -89,20 +104,16 @@ $(document).ready(function () {
     });
 
     $('#modalParameter').on('hidden.bs.modal', function () {
-        $('#id').val('');
         $('#formParameter')[0].reset();
         $('#id').val('');
-
-        $('#formParameter .form-control').removeClass('is-valid is-invalid');
-        $('#nama_parameter-error, #satuan-error, #kategori-error, #nilai_ideal_min-error, #nilai_ideal_max-error, #deskripsi-error')
-            .text('');
-        $('.error').remove();
+        resetValidationState();
     });
+
     $('#modalParameter').on('show.bs.modal', function () {
-        $('#modal-title').html(`
-            <i class="fas fa-box ms-2"></i>
-            Form Data
+        const title = checkingEdit() ? 'Edit Kondisi Lingkungan' : 'Tambah Kondisi Lingkungan';
+        $('#labelModaParameter').html(`
+            <i class="fa-solid fa-hand-holding-droplet me-2"></i>
+            ${title}
         `);
     });
-
 });
