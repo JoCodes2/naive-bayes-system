@@ -174,7 +174,7 @@
 <body class="bg-gray-50 chili-pattern">
 
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-20 relative overflow-hidden">
+    <div class="gradient-bg text-white py-5 overflow-hidden">
         <!-- Decorative Elements -->
         <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-white opacity-5 rounded-full -ml-48 -mb-48"></div>
@@ -213,6 +213,29 @@
             <div class="lg:col-span-2">
                 <form id="diagnosisForm" class="space-y-6">
                     @csrf
+                    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 card-hover border-l-8 border-green-500">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center text-green-600">
+                                <i class="fas fa-user-circle text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">Profil Identitas</h2>
+                                <p class="text-gray-500 text-sm mt-1">Lengkapi nama untuk keperluan laporan diagnosa</p>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-green-600 text-gray-400">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <input type="text"
+                                name="nama_petani"
+                                id="nama_petani"
+                                required
+                                class="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white outline-none transition-all duration-200 text-gray-700 placeholder-gray-400"
+                                placeholder="Masukkan Nama Lengkap Petani...">
+                        </div>
+                    </div>
 
                     <!-- Section 1: Parameter Lingkungan -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 card-hover leaf-decoration">
@@ -280,52 +303,54 @@
             <div class="lg:col-span-1">
                 <div class="sticky top-8 space-y-6">
 
-                    <!-- Naive Bayes Method -->
-                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover border-t-4 border-green-500">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
                                 <i class="fas fa-brain text-white"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-gray-800">Algoritma Naive Bayes</h3>
+                            <h3 class="font-bold text-lg text-gray-800">Logika Bayes</h3>
                         </div>
 
-                        <p class="text-gray-600 text-sm mb-4">
-                            Teorema probabilitas untuk klasifikasi penyakit:
+                        <p class="text-gray-600 text-xs mb-4">
+                            Menghitung probabilitas penyakit ($H$) berdasarkan bukti Gejala ($G$) dan Lingkungan ($L$):
                         </p>
 
-                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 mb-4 border-2 border-green-200">
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 mb-4 border border-green-100 shadow-inner">
                             <div class="text-center mb-2">
-                                <div class="font-mono text-sm font-semibold text-green-800">
-                                    P(Penyakit|Gejala) =
+                                <div class="font-mono text-xs font-bold text-green-800">
+                                    P(H|G,L) =
                                 </div>
-                                <div class="border-t-2 border-green-300 my-2"></div>
-                                <div class="font-mono text-xs text-green-700">
-                                    P(Gejala|Penyakit) × P(Penyakit)
+                                <div class="border-t-2 border-green-300 my-1 mx-4"></div>
+                                <div class="font-mono text-[10px] text-green-700">
+                                    P(G|H) × P(L|H) × P(H)
                                 </div>
                                 <div class="border-t-2 border-green-300 my-1 mx-8"></div>
-                                <div class="font-mono text-xs text-green-700">
-                                    P(Gejala)
+                                <div class="font-mono text-[10px] text-green-700">
+                                    P(G,L)
                                 </div>
                             </div>
                         </div>
 
-                        <div class="space-y-2 text-xs text-gray-600">
+                        <div class="space-y-2 text-[11px] text-gray-600">
                             <div class="flex items-start gap-2">
-                                <span class="font-semibold text-green-700">P(Penyakit|Gejala):</span>
-                                <span>Probabilitas posterior</span>
+                                <span class="font-bold text-green-700">P(H|G,L):</span>
+                                <span>Probabilitas akhir (Posterior)</span>
                             </div>
                             <div class="flex items-start gap-2">
-                                <span class="font-semibold text-green-700">P(Gejala|Penyakit):</span>
-                                <span>Likelihood evidence</span>
+                                <span class="font-bold text-green-700">P(G|H):</span>
+                                <span>Likelihood bukti Gejala</span>
                             </div>
                             <div class="flex items-start gap-2">
-                                <span class="font-semibold text-green-700">P(Penyakit):</span>
-                                <span>Prior probability</span>
+                                <span class="font-bold text-green-700">P(L|H):</span>
+                                <span>Likelihood bukti Lingkungan</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="font-bold text-green-700">P(H):</span>
+                                <span>Probabilitas penyakit (Prior)</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Algorithm Flow -->
                     <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
                         <div class="flex items-center gap-2 mb-4">
                             <i class="fas fa-project-diagram text-green-600"></i>
@@ -336,8 +361,8 @@
                             <div class="algorithm-step">
                                 <div class="step-dot">1</div>
                                 <div class="pl-6">
-                                    <h4 class="font-semibold text-sm text-gray-700">Input Evidence</h4>
-                                    <p class="text-xs text-gray-500">Gejala & lingkungan</p>
+                                    <h4 class="font-semibold text-sm text-gray-700">Koleksi Bukti</h4>
+                                    <p class="text-[11px] text-gray-500">Normalisasi input Gejala & Lingkungan</p>
                                 </div>
                             </div>
 
@@ -345,63 +370,49 @@
                                 <div class="step-dot">2</div>
                                 <div class="pl-6">
                                     <h4 class="font-semibold text-sm text-gray-700">Hitung Likelihood</h4>
-                                    <p class="text-xs text-gray-500">P(E|H) per penyakit</p>
+                                    <p class="text-[11px] text-gray-500">Mencari frekuensi $P(G|H)$ dan $P(L|H)$</p>
                                 </div>
                             </div>
 
                             <div class="algorithm-step">
                                 <div class="step-dot">3</div>
                                 <div class="pl-6">
-                                    <h4 class="font-semibold text-sm text-gray-700">Kalikan Prior</h4>
-                                    <p class="text-xs text-gray-500">P(H) dari dataset</p>
+                                    <h4 class="font-semibold text-sm text-gray-700">Integrasi Prior</h4>
+                                    <p class="text-[11px] text-gray-500">Kalikan nilai Likelihood dengan $P(H)$</p>
                                 </div>
                             </div>
 
                             <div class="algorithm-step">
                                 <div class="step-dot">4</div>
                                 <div class="pl-6">
-                                    <h4 class="font-semibold text-sm text-gray-700">Normalisasi</h4>
-                                    <p class="text-xs text-gray-500">Bagi dengan P(E)</p>
-                                </div>
-                            </div>
-
-                            <div class="algorithm-step">
-                                <div class="step-dot">5</div>
-                                <div class="pl-6">
-                                    <h4 class="font-semibold text-sm text-gray-700">Pilih Max</h4>
-                                    <p class="text-xs text-gray-500">Probabilitas tertinggi</p>
+                                    <h4 class="font-semibold text-sm text-gray-700">Klasifikasi</h4>
+                                    <p class="text-[11px] text-gray-500">Mencari nilai Max Posterior (ArgMax)</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Petunjuk -->
                     <div class="info-box rounded-2xl p-6">
                         <div class="flex items-center gap-2 mb-4">
                             <i class="fas fa-info-circle text-green-600"></i>
-                            <h3 class="font-bold text-gray-800">Petunjuk Penggunaan</h3>
+                            <h3 class="font-bold text-gray-800 text-sm">Petunjuk Penggunaan</h3>
                         </div>
 
-                        <ul class="space-y-3 text-sm text-gray-600">
+                        <ul class="space-y-3 text-[11px] text-gray-600">
                             <li class="flex items-start gap-2">
-                                <i class="fas fa-check text-green-500 mt-1"></i>
-                                <span>Centang minimal 1 kondisi lingkungan aktual</span>
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span>Isi nama petani untuk keperluan laporan diagnosa.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <i class="fas fa-check text-green-500 mt-1"></i>
-                                <span>Pilih 2-5 gejala yang paling dominan terlihat</span>
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span>Pastikan minimal 2 parameter lingkungan diisi sesuai kondisi lahan.</span>
                             </li>
                             <li class="flex items-start gap-2">
-                                <i class="fas fa-check text-green-500 mt-1"></i>
-                                <span>Sistem akan menghitung probabilitas tiap penyakit</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <i class="fas fa-check text-green-500 mt-1"></i>
-                                <span>Hasil dengan confidence > 60% dianggap valid</span>
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span>Pilih minimal 2 gejala yang paling dominan terlihat.</span>
                             </li>
                         </ul>
                     </div>
-
 
                 </div>
             </div>
