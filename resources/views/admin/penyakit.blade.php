@@ -136,24 +136,29 @@
                         let tableBody = "";
 
                         if (userData.length > 0) {
+                            // 1. Sortir data secara manual (P01, P02, dst)
+                            userData.sort((a, b) => {
+                                return (a.kode_penyakit || '').localeCompare(b.kode_penyakit || '', undefined, {
+                                    numeric: true,
+                                    sensitivity: 'base'
+                                });
+                            });
+
                             $.each(userData, function(index, item) {
                                 tableBody += "<tr>";
                                 tableBody += "<td>" + (index + 1) + "</td>";
-                                tableBody += "<td>" + (item.kode_penyakit || '-') + "</td>";
+                                tableBody += "<td><span class='badge bg-light-primary text-primary font-bold'>" + (item.kode_penyakit || '-') + "</span></td>";
                                 tableBody += "<td>" + (item.nama_penyakit || '-') + "</td>";
-                                tableBody += "<td style='text-align: left;'>" + (item
-                                    .deskripsi ?? '-') + "</td>";
-                                tableBody += "<td>" + formatList(item.solusi_treatment) +
-                                    "</td>";
-                                tableBody += "<td>" + formatList(item.pencegahan) +
-                                    "</td>";
+                                tableBody += "<td style='text-align: left;'>" + (item.deskripsi ?? '-') + "</td>";
+                                tableBody += "<td>" + formatList(item.solusi_treatment) + "</td>";
+                                tableBody += "<td>" + formatList(item.pencegahan) + "</td>";
                                 tableBody += `
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
-                                        <a href="#" class="edit-btn" data-id="${item.id}">
+                                        <a href="#" class="edit-btn text-warning" data-id="${item.id}">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <a href="#" class="delete-confirm" data-id="${item.id}">
+                                        <a href="#" class="delete-confirm text-danger" data-id="${item.id}">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -164,14 +169,18 @@
 
                         $("#tBody").html(tableBody);
 
-                        // Initialize DataTable
+                        // 2. Inisialisasi DataTable dengan urutan kolom kode (kolom index ke-1)
                         $('#dataPenyakit').DataTable({
                             destroy: true,
                             paging: true,
                             searching: true,
                             ordering: true,
                             info: true,
-                            order: [],
+                            // Kolom index 1 adalah 'Kode Penyakit', diurutkan secara Ascending (asc)
+                            order: [[1, 'asc']],
+                            columnDefs: [
+                                { targets: [4, 5, 6], orderable: false } // Matikan sorting untuk kolom deskripsi/aksi
+                            ]
                         });
                     },
                     error: function() {

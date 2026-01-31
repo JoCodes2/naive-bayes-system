@@ -13,6 +13,7 @@ class HasilDiagnosaModel extends Model
     protected $table = 'hasil_diagnosa';
     protected $fillable = [
         'id',
+        'nama_petani',
         'gejala_input',
         'lingkungan_input',
         'penyakit_prediksi',

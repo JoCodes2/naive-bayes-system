@@ -105,51 +105,62 @@ class datasetService {
             const responseData = await this.ajaxRequest(`${appUrl}/naive-bayes/data-set/`, 'GET');
 
             if (responseData && responseData.data) {
+                const sortedData = responseData.data.sort((a, b) => {
+                    const kodeA = a.penyakit ? a.penyakit.kode_penyakit : '';
+                    const kodeB = b.penyakit ? b.penyakit.kode_penyakit : '';
+                    return kodeA.localeCompare(kodeB, undefined, { numeric: true, sensitivity: 'base' });
+                });
+
                 let tableBody = '';
-                responseData.data.forEach((item, index) => {
-                    // Perbaikan: Gunakan Object.keys untuk menghitung objek lingkungan
+                sortedData.forEach((item, index) => {
                     const countGejala = item.gejala ? item.gejala.length : 0;
                     const countLingkungan = item.lingkungan ? Object.keys(item.lingkungan).length : 0;
 
-                    // Badge yang bisa diklik (Cursor Pointer)
+                    const displayPenyakit = item.penyakit
+                        ? `<span class="badge bg-light-success text-success me-2">${item.penyakit.kode_penyakit}</span> ${item.penyakit.nama_penyakit}`
+                        : '<span class="text-muted">N/A</span>';
+
                     let badgeGejala = `
-                    <span class="badge btn-primary cursor-pointer btn-view-gejala"
-                          data-id="${item.id}"
-                          style="cursor:pointer">
-                        ${countGejala} Gejala Terpilih
-                    </span>`;
+                <span class="badge btn-primary cursor-pointer btn-view-gejala"
+                      data-id="${item.id}"
+                      style="cursor:pointer">
+                    <i class="fas fa-eye me-1"></i> ${countGejala} Gejala
+                </span>`;
 
                     let badgeLingkungan = `
-                    <span class="badge btn-info cursor-pointer btn-view-lingkungan"
-                          data-id="${item.id}"
-                          style="cursor:pointer">
-                        ${countLingkungan} Parameter Terpilih
-                    </span>`;
+                <span class="badge btn-info cursor-pointer btn-view-lingkungan"
+                      data-id="${item.id}"
+                      style="cursor:pointer">
+                    <i class="fas fa-eye me-1"></i> ${countLingkungan} Parameter
+                </span>`;
 
                     tableBody += `
-                <tr>
-                    <td class="text-center">${index + 1}</td>
-                    <td class="fw-bold">${item.penyakit ? item.penyakit.nama_penyakit : 'N/A'}</td>
-                    <td class="text-center">${badgeGejala}</td>
-                    <td class="text-center">${badgeLingkungan}</td>
-                    <td class="text-center">
-                        <div class="d-flex gap-2 justify-content-center">
-                            <a href="javascript:void(0)" class="edit-dataset btn btn-icon btn-round btn-primary btn-sm" data-id="${item.id}">
-                                <i class="fas fa-pencil-alt"></i>
-                            </a>
-                            <a href="javascript:void(0)" class="delete-dataset btn btn-icon btn-round btn-danger btn-sm" data-id="${item.id}">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>`;
+            <tr>
+                <td class="text-center text-muted">${index + 1}</td>
+                <td class="fw-bold">${displayPenyakit}</td>
+                <td class="text-center">${badgeGejala}</td>
+                <td class="text-center">${badgeLingkungan}</td>
+                <td class="text-center">
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="javascript:void(0)" class="edit-dataset btn btn-icon btn-round btn-primary btn-sm" data-id="${item.id}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="delete-dataset btn btn-icon btn-round btn-danger btn-sm" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>`;
                 });
 
                 $("#datasetTable tbody").html(tableBody);
-                $('#datasetTable').DataTable({ responsive: true });
 
-                // Pasang event listener untuk modal detail
-                this.initDetailEvents(responseData.data);
+                $('#datasetTable').DataTable({
+                    responsive: true,
+                    order: []
+                });
+
+                this.initDetailEvents(sortedData);
             }
         } catch (error) {
             console.error('Error fetching dataset:', error);

@@ -33,7 +33,6 @@ class DiagnosaRepositories implements DiagnosaInterfaces
     public function diagnosa(DiagnosaRequest $request): JsonResponse
     {
         try {
-            // 1. Hitung menggunakan Service
             $calculation = $this->nbService->calculate($request->gejala, $request->lingkungan);
 
             if (empty($calculation)) {
@@ -42,28 +41,25 @@ class DiagnosaRepositories implements DiagnosaInterfaces
 
             $winner = $calculation[0];
 
-            // 2. Gunakan DB Transaction (Opsional tapi disarankan)
-            // Agar jika simpan history gagal, response tetap aman
             $diagnosa = HasilDiagnosaModel::create([
                 'id' => (string) Str::uuid(),
+                'nama_petani' => $request->nama_petani,
                 'gejala_input' => $request->gejala,
                 'lingkungan_input' => $request->lingkungan,
                 'penyakit_prediksi' => $winner['penyakit_id'],
-                'probabilitas' => round($winner['persentase'], 2), // Simpan angka murni di DB
+                'probabilitas' => round($winner['persentase'], 2),
             ]);
 
-            // 3. Ambil data penyakit dari detail yang sudah ada di $winner
-            // Ini lebih cepat daripada query ulang find($id)
             $penyakit = $winner['detail'];
 
             return $this->success([
-                'id_diagnosa' => $diagnosa->id, // Kirim ID history agar FE bisa redirect ke hasil
+                'id_diagnosa' => $diagnosa->id,
+                'data' => $diagnosa,
                 'hasil' => $penyakit,
                 'keyakinan' => round($winner['persentase'], 2) . '%',
-                'detail_perhitungan' => $calculation
+                'detail_perhitungan' => $calculation,
             ], "Diagnosa Selesai");
         } catch (\Exception $e) {
-            // Gunakan Log untuk tracking error di backend
             Log::error("Diagnosa Error: " . $e->getMessage());
             return $this->error("Terjadi kesalahan pada sistem diagnosa.");
         }

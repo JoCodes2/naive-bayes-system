@@ -17,19 +17,18 @@ class DiagnosaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Validasi Gejala
+            'nama_petani' => 'required',
             'gejala' => 'required|array|min:1',
-            'gejala.*' => 'string|exists:gejala,kode_gejala', // PASTIKAN mengecek kode_gejala
+            'gejala.*' => 'string|exists:gejala,kode_gejala',
 
-            // Validasi Lingkungan
             'lingkungan' => 'required|array|min:1',
-            // Jangan tambahkan 'lingkungan.*' => 'exists:...' di sini!
         ];
     }
 
     public function messages(): array
     {
         return [
+            'nama_petani.required' => 'Nama harus diisi.',
             'gejala.required' => 'Pilih minimal satu gejala yang terlihat pada tanaman.',
             'gejala.*.exists' => 'Kode gejala tidak valid atau tidak terdaftar.',
             'lingkungan.required' => 'Pilih kondisi lingkungan/sensor saat ini.',
