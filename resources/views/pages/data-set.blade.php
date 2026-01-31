@@ -43,23 +43,40 @@
             <small class="text-danger" id="penyakit_id-error"></small>
         </div>
 
+        {{-- Ganti bagian row di dalam x-base-form --}}
         <div class="row">
-            {{-- Pilih Gejala --}}
-            <div class="col-md-6">
-                <label class="fw-bold mb-2">Daftar Gejala Terkait</label>
-                <div class="card border p-3" style="max-height: 300px; overflow-y: auto;" id="container-gejala">
-                    {{-- Checkbox gejala diisi via AJAX --}}
-                    <div class="text-muted small">Memuat data gejala...</div>
+            {{-- Seksi Gejala --}}
+            <div class="col-12 mb-4">
+                <div class="d-flex justify-content-between align-items-end mb-2 border-bottom pb-2">
+                    <div>
+                        <label class="fw-bold fs-5 text-success">
+                            <i class="fas fa-leaf me-2"></i>Daftar Gejala Terkait
+                        </label>
+                        <p class="text-muted small mb-0">Pilih gejala yang muncul pada target penyakit ini</p>
+                    </div>
+                </div>
+
+                <div class="card border-0 bg-light shadow-none">
+                    <div class="card-body p-3" style="max-height: 350px; overflow-y: auto;" id="container-gejala">
+                        {{-- Diisi via AJAX --}}
+                    </div>
                 </div>
                 <small class="text-danger" id="gejala-error"></small>
             </div>
 
-            {{-- Pilih Lingkungan --}}
-            <div class="col-md-6">
-                <label class="fw-bold mb-2">Kondisi Lingkungan Terkait</label>
-                <div class="card border p-3" style="max-height: 300px; overflow-y: auto;" id="container-lingkungan">
-                    {{-- Checkbox lingkungan diisi via AJAX --}}
-                    <div class="text-muted small">Memuat data lingkungan...</div>
+            {{-- Seksi Lingkungan --}}
+            <div class="col-12">
+                <div class="mb-2 border-bottom pb-2">
+                    <label class="fw-bold fs-5 text-primary">
+                        <i class="fas fa-microchip me-2"></i>Kondisi Lingkungan Ideal
+                    </label>
+                    <p class="text-muted small mb-0">Tentukan ambang batas lingkungan saat penyakit ini berkembang</p>
+                </div>
+
+                <div class="card border-0 bg-light shadow-none">
+                    <div class="card-body p-3" id="container-lingkungan">
+                        {{-- Diisi via AJAX --}}
+                    </div>
                 </div>
                 <small class="text-danger" id="lingkungan-error"></small>
             </div>
@@ -70,40 +87,4 @@
 
 @section('scripts')
     <script type="module" src="{{ asset('js/controllers/data-set.controller.js')}}"></script>
-
-<style>
-    /* Merapikan daftar checkbox */
-    .form-check {
-        display: flex;
-        align-items: flex-start;
-        padding-left: 0;
-        margin-bottom: 8px;
-        position: relative;
-    }
-
-    .form-check-input {
-        margin-top: 4px;
-        margin-right: 10px;
-        position: relative;
-        margin-left: 0;
-    }
-
-    .form-check-label {
-        line-height: 1.4;
-        cursor: pointer;
-        display: block;
-    }
-
-    /* Memastikan pesan error tidak merusak layout checkbox */
-    #gejala-error, #lingkungan-error {
-        display: block;
-        margin-top: 5px;
-        font-weight: bold;
-    }
-
-    /* Menghilangkan ikon error bawaan jika ada yang menumpuk */
-    .form-check .error {
-        display: none !important;
-    }
-</style>
 @endsection

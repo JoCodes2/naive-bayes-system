@@ -32,6 +32,7 @@ class DataTrainingRepositories implements DataTrainingInterfaces
 
     public function createData(DataTrainingRequest $request)
     {
+        DB::beginTransaction(); // Memulai transaksi
         try {
             $data = $this->dataModel::create([
                 'penyakit_id' => $request->penyakit_id,
@@ -39,8 +40,10 @@ class DataTrainingRepositories implements DataTrainingInterfaces
                 'lingkungan' => $request->lingkungan,
             ]);
 
+            DB::commit(); // Simpan permanen
             return $this->success($data, 'Dataset training berhasil ditambahkan');
         } catch (\Throwable $th) {
+            DB::rollBack(); // Batalkan jika error
             return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }
     }
@@ -57,6 +60,7 @@ class DataTrainingRepositories implements DataTrainingInterfaces
     public function updateData(DataTrainingRequest $request, $id)
     {
         try {
+            DB::beginTransaction(); // Memulai transaksi
             $data = $this->dataModel::find($id);
             if (!$data) return $this->idOrDataNotFound();
 
@@ -65,9 +69,10 @@ class DataTrainingRepositories implements DataTrainingInterfaces
                 'gejala' => $request->gejala,
                 'lingkungan' => $request->lingkungan,
             ]);
-
+            DB::commit(); // Simpan permanen
             return $this->success($data, 'Dataset training berhasil diperbarui');
         } catch (\Throwable $th) {
+            DB::rollBack(); // Batalkan jika error
             return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }
     }

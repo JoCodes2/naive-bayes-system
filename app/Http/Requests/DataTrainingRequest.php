@@ -17,24 +17,24 @@ class DataTrainingRequest extends FormRequest
     {
         return [
             'penyakit_id' => 'required|exists:penyakit,id',
-            'gejala'      => 'required|array|min:1',
-            'gejala.*'    => 'exists:gejala,id',
-            'lingkungan'  => 'required|array|min:1',
-            'lingkungan.*' => 'exists:kondisi_lingkungan,id',
+
+            // Validasi Gejala: Harus array dan kodenya harus ada di tabel gejala
+            'gejala'      => 'required|array|min:2',
+            'gejala.*'    => 'required|string|exists:gejala,kode_gejala',
+
+            // Validasi Lingkungan: Harus array asosiatif (key-value)
+            'lingkungan'  => 'required|array|min:2',
+            'lingkungan.*' => 'required|string|in:rendah,normal,tinggi', // Validasi berdasarkan label yang diizinkan
         ];
     }
 
     public function messages(): array
     {
         return [
-            'penyakit_id.required' => 'Penyakit wajib dipilih.',
-            'penyakit_id.exists'   => 'Penyakit tidak valid.',
-            'gejala.required'      => 'Pilih minimal satu gejala.',
-            'gejala.array'         => 'Format data gejala tidak valid.',
-            'gejala.*.exists'      => 'Salah satu gejala yang dipilih tidak terdaftar.',
-            'lingkungan.required'  => 'Pilih minimal satu kondisi lingkungan.',
-            'lingkungan.array'     => 'Format data lingkungan tidak valid.',
-            'lingkungan.*.exists'  => 'Salah satu parameter lingkungan tidak terdaftar.',
+            'gejala.*.exists' => 'Kode gejala :input tidak valid.',
+            'lingkungan.*.in' => 'Kondisi lingkungan harus antara rendah, normal, atau tinggi.',
+            'gejala.min'      => 'Pilih minimal 2 gejala.',
+            'lingkungan.min'  => 'Pilih minimal 2 parameter lingkungan.',
         ];
     }
 
