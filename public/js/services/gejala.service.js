@@ -53,6 +53,7 @@ class gejalaService {
                     <td>${item.kode_gejala}</td>
                     <td>${this.getKategoriBadge(item.kategori)}</td>
                     <td>${item.nama_gejala}</td>
+                    <td>${(item.deskripsi) ?? '-'}</td>
                     <td class="text-center">
                         <div class="d-flex gap-2">
                             <a href="#" class="edit-gejala" data-id="${item.id}" title="Edit">

@@ -38,6 +38,7 @@ class GejalaRepositories implements GejalaInterfaces
             $data->kode_gejala = $request->input('kode_gejala');
             $data->nama_gejala = $request->input('nama_gejala');
             $data->kategori = $request->input('kategori');
+            $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {
@@ -51,6 +52,7 @@ class GejalaRepositories implements GejalaInterfaces
             $data->kode_gejala = $request->input('kode_gejala');
             $data->nama_gejala = $request->input('nama_gejala');
             $data->kategori = $request->input('kategori');
+            $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {

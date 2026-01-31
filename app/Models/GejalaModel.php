@@ -16,6 +16,7 @@ class GejalaModel extends Model
         'id',
         'kode_gejala',
         'nama_gejala',
+        'deskripsi',
         'kategori',
         'created_at',
         'updated_at'
