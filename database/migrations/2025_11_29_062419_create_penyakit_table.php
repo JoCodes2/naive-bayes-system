@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('kode_penyakit')->unique();
             $table->string('nama_penyakit');
             $table->text('deskripsi');
-            $table->text('solusi_perawatan');
-            $table->text('tindakan_pencegahan');
-            $table->text('faktor_risiko')->nullable();
+            $table->text('solusi_treatment');
+            $table->text('pencegahan');
             $table->timestamps();
         });
     }

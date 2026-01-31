@@ -36,7 +36,7 @@ class GejalaRepositories implements GejalaInterfaces
         try {
             $data = new $this->gejalaModel;
             $data->kode_gejala = $request->input('kode_gejala');
-            $data->deskripsi_gejala = $request->input('deskripsi_gejala');
+            $data->nama_gejala = $request->input('nama_gejala');
             $data->kategori = $request->input('kategori');
             $data->save();
             return $this->success($data);
@@ -49,7 +49,7 @@ class GejalaRepositories implements GejalaInterfaces
         try {
             $data = $this->gejalaModel::where('id', $id)->first();
             $data->kode_gejala = $request->input('kode_gejala');
-            $data->deskri_gejala = $request->input('deskri_gejala');
+            $data->nama_gejala = $request->input('nama_gejala');
             $data->kategori = $request->input('kategori');
             $data->save();
             return $this->success($data);

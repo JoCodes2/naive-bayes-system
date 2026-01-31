@@ -25,9 +25,10 @@ class ParameterRequest extends FormRequest
     {
         return [
             'nama_parameter' => 'required|max:255',
-            'kategori' => 'required',
-            'nilai_ideal_min' => 'required',
-            'nilai_ideal_max' => 'required',
+            'nilai_label' => 'required',
+            'satuan' => 'required',
+            'min_value' => 'required',
+            'max_value' => 'required',
         ];
     }
     protected function failedValidation(Validator $validator)

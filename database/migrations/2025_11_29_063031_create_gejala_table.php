@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('gejala', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_gejala')->unique();
-            $table->text('deskripsi_gejala');
+            $table->string('nama_gejala');
+            $table->text('deskripsi')->nullable(); // Tambahkan kolom ini
             $table->enum('kategori', ['akar', 'daun', 'buah', 'batang', 'umum'])->default('umum');
             $table->timestamps();
         });

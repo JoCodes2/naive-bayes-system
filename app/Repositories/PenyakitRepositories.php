@@ -47,9 +47,8 @@ class PenyakitRepositories implements PenyakitInterfaces
             $data->kode_penyakit       = $request->kode_penyakit;
             $data->nama_penyakit       = $request->nama_penyakit;
             $data->deskripsi           = $request->deskripsi;
-            $data->solusi_perawatan    = $request->solusi_perawatan;
-            $data->tindakan_pencegahan = $request->tindakan_pencegahan;
-            $data->faktor_risiko       = $request->faktor_risiko;
+            $data->solusi_treatment    = $request->solusi_treatment;
+            $data->pencegahan = $request->pencegahan;
 
             $data->save();
 
@@ -71,9 +70,8 @@ class PenyakitRepositories implements PenyakitInterfaces
             $data->kode_penyakit       = $request->kode_penyakit;
             $data->nama_penyakit       = $request->nama_penyakit;
             $data->deskripsi           = $request->deskripsi;
-            $data->solusi_perawatan    = $request->solusi_perawatan;
-            $data->tindakan_pencegahan = $request->tindakan_pencegahan;
-            $data->faktor_risiko       = $request->faktor_risiko;
+            $data->solusi_treatment    = $request->solusi_treatment;
+            $data->pencegahan = $request->pencegahan;
 
             $data->save();
 

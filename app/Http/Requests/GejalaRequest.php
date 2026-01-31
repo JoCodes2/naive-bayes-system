@@ -26,7 +26,7 @@ class GejalaRequest extends FormRequest
                     ? Rule::unique('gejala', 'kode_gejala')->ignore($this->id)
                     : Rule::unique('gejala', 'kode_gejala')
             ],
-            'deskripsi_gejala' => 'required',
+            'nama_gejala' => 'required',
             'kategori' => 'required',
         ];
     }
@@ -35,7 +35,7 @@ class GejalaRequest extends FormRequest
         return [
             'kode_gejala.required' => 'Kode gejala tidak boleh kosong.',
             'kode_gejala.unique'   => 'Kode gejala sudah digunakan, pilih kode lain.',
-            'deskripsi_gejala.required' => 'Deskripsi gejala tidak boleh kosong.',
+            'nama_gejala.required' => 'Nama gejala tidak boleh kosong.',
             'kategori.required' => 'Kategori harus dipilih.',
         ];
     }

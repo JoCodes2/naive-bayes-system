@@ -2,122 +2,76 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\DiagnosaRequest;
 use App\Interfaces\DiagnosaInterfaces;
-use App\Models\GejalaModel;
-use App\Models\ParameterLingkunganModel;
-use App\Models\RiwayatDiagnosaModel;
-use App\Services\DiagnosaService;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\DiagnosaRequest;
+use App\Models\{GejalaModel, KondisiLingkunganModel, HasilDiagnosaModel, PenyakitModel};
+use App\Services\NaiveBayesService;
+use App\Traits\HttpResponseTraits;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DiagnosaRepositories implements DiagnosaInterfaces
 {
-    private DiagnosaService $diagnosaService;
+    use HttpResponseTraits;
+    protected $nbService;
 
-    public function __construct(DiagnosaService $diagnosaService)
+    public function __construct(NaiveBayesService $nbService)
     {
-        $this->diagnosaService = $diagnosaService;
+        $this->nbService = $nbService;
     }
 
     public function getMasterData(): JsonResponse
     {
-        $gejala = GejalaModel::select('id', 'kode_gejala', 'deskripsi_gejala', 'kategori')
-            ->orderBy('kategori')
-            ->orderBy('kode_gejala')
-            ->get();
-
-        $parameter = ParameterLingkunganModel::select('nama_parameter', 'satuan', 'nilai_ideal_min', 'nilai_ideal_max', 'deskripsi')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'gejala' => $gejala,
-                'parameter_lingkungan' => $parameter
-            ]
-        ]);
+        $data = [
+            'gejala' => GejalaModel::orderBy('kode_gejala', 'asc')->get(),
+            'lingkungan' => KondisiLingkunganModel::all()->groupBy('nama_parameter')
+        ];
+        return $this->success($data);
     }
 
     public function diagnosa(DiagnosaRequest $request): JsonResponse
     {
         try {
-            $kondisiLingkungan = $request->input('kondisi_lingkungan');
-            $gejalaDipilih = $request->input('gejala');
+            // 1. Hitung menggunakan Service
+            $calculation = $this->nbService->calculate($request->gejala, $request->lingkungan);
 
-            $hasilDiagnosa = $this->diagnosaService->prosesDiagnosa($kondisiLingkungan, $gejalaDipilih);
+            if (empty($calculation)) {
+                return $this->error("Data training tidak cukup untuk melakukan diagnosa.");
+            }
 
-            $hasilTerbaik = $hasilDiagnosa[0];
+            $winner = $calculation[0];
 
-            $riwayat = $this->diagnosaService->simpanRiwayat($kondisiLingkungan, $gejalaDipilih, $hasilTerbaik);
+            // 2. Gunakan DB Transaction (Opsional tapi disarankan)
+            // Agar jika simpan history gagal, response tetap aman
+            $diagnosa = HasilDiagnosaModel::create([
+                'id' => (string) Str::uuid(),
+                'gejala_input' => $request->gejala,
+                'lingkungan_input' => $request->lingkungan,
+                'penyakit_prediksi' => $winner['penyakit_id'],
+                'probabilitas' => round($winner['persentase'], 2), // Simpan angka murni di DB
+            ]);
 
-            $response = [
-                'success' => true,
-                'message' => 'Diagnosa berhasil dilakukan',
-                'data' => [
-                    'diagnosa_terbaik' => [
-                        'penyakit' => $hasilTerbaik['penyakit']->nama_penyakit,
-                        'kode_penyakit' => $hasilTerbaik['penyakit']->kode_penyakit,
-                        'deskripsi' => $hasilTerbaik['penyakit']->deskripsi,
-                        'tingkat_kepercayaan' => $hasilTerbaik['persentase'] . '%',
-                        'skor_akhir' => $hasilTerbaik['skor_akhir'],
-                        'rekomendasi_perawatan' => $hasilTerbaik['penyakit']->solusi_perawatan,
-                        'tindakan_pencegahan' => $hasilTerbaik['penyakit']->tindakan_pencegahan,
-                        'faktor_risiko' => $hasilTerbaik['penyakit']->faktor_risiko
-                    ],
-                    'semua_hasil' => collect($hasilDiagnosa)->map(function ($hasil) {
-                        return [
-                            'penyakit' => $hasil['penyakit']->nama_penyakit,
-                            'persentase' => $hasil['persentase'] . '%',
-                            'skor_gejala' => $hasil['skor_gejala'],
-                            'skor_lingkungan' => $hasil['skor_lingkungan']
-                        ];
-                    })->toArray(),
-                    'riwayat_id' => $riwayat->id
-                ]
-            ];
+            // 3. Ambil data penyakit dari detail yang sudah ada di $winner
+            // Ini lebih cepat daripada query ulang find($id)
+            $penyakit = $winner['detail'];
 
-            return response()->json($response);
+            return $this->success([
+                'id_diagnosa' => $diagnosa->id, // Kirim ID history agar FE bisa redirect ke hasil
+                'hasil' => $penyakit,
+                'keyakinan' => round($winner['persentase'], 2) . '%',
+                'detail_perhitungan' => $calculation
+            ], "Diagnosa Selesai");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat diagnosa: ' . $e->getMessage()
-            ], 500);
+            // Gunakan Log untuk tracking error di backend
+            Log::error("Diagnosa Error: " . $e->getMessage());
+            return $this->error("Terjadi kesalahan pada sistem diagnosa.");
         }
     }
 
     public function getRiwayat(): JsonResponse
     {
-        $riwayat = RiwayatDiagnosaModel::with('penyakit')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-
-                $gejalaIds = is_array($item->gejala_yang_dipilih)
-                    ? $item->gejala_yang_dipilih
-                    : json_decode($item->gejala_yang_dipilih, true);
-
-                $gejala = GejalaModel::whereIn('id', $gejalaIds)
-                    ->pluck('deskripsi_gejala');
-
-                return [
-                    'id' => $item->id,
-                    'penyakit_id' => $item->penyakit_id,
-                    'nama_penyakit' => $item->penyakit->nama_penyakit ?? '-',
-                    'tingkat_kepercayaan' => $item->tingkat_kepercayaan . '%',
-                    'rekomendasi_perawatan' => $item->rekomendasi_perawatan,
-                    'rekomendasi_pencegahan' => $item->rekomendasi_pencegahan,
-                    'kondisi_lingkungan' => $item->kondisi_lingkungan,
-
-                    'gejala' => $gejala,
-
-                    'tanggal_diagnosa' => $item->created_at->format('d-m-Y H:i:s'),
-                    'catatan_tambahan' => $item->catatan_tambahan
-                ];
-            });
-
-        return response()->json([
-            'success' => true,
-            'data' => $riwayat
-        ]);
+        $data = HasilDiagnosaModel::with('penyakit')->latest()->get();
+        return $this->success($data);
     }
 }

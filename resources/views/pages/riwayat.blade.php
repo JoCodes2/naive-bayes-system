@@ -12,9 +12,17 @@
     >
         <div class="py-0">
             {{-- Table --}}
-            <x-base-table initId="riwayatTabel" :columns="['No', 'Tanggal Diagnosa', 'Kondisi Lingkungan', 'Gejala Tanaman','Hasil Diagnosa ','Tingkat Kepercayaan', 'Rekomendasi Perawatan', 'Rekomendasi Pencegahan', 'Catatan Tambahan']">
+                    {{-- Table --}}
+            <x-base-table initId="riwayatTabel" :columns="[
+                'No',
+                'Tanggal',
+                'Inputan (Lgk/Gjl)',
+                'Hasil Diagnosa',
+                'Kepercayaan',
+                'Aksi'
+            ]">
                 <tbody>
-
+                    {{-- Data akan diisi oleh riwayat.controller.js --}}
                 </tbody>
             </x-base-table>
 

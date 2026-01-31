@@ -52,7 +52,7 @@ class gejalaService {
                     <td>${index + 1}</td>
                     <td>${item.kode_gejala}</td>
                     <td>${this.getKategoriBadge(item.kategori)}</td>
-                    <td>${item.deskripsi_gejala}</td>
+                    <td>${item.nama_gejala}</td>
                     <td class="text-center">
                         <div class="d-flex gap-2">
                             <a href="#" class="edit-gejala" data-id="${item.id}" title="Edit">
@@ -140,7 +140,7 @@ class gejalaService {
             $('#modalGejala').modal('show');
             $('#id').val(responseData.data.id);
             $('#kode_gejala').val(responseData.data.kode_gejala);
-            $('#deskripsi_gejala').val(responseData.data.deskripsi_gejala);
+            $('#nama_gejala').val(responseData.data.nama_gejala);
             $('#kategori').val(responseData.data.kategori);
             checkingEdit();
         } catch (error) {

@@ -29,13 +29,6 @@
 
         <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
             <a href="/dashboard" class="menu-link">
-                <i class="menu-icon  fa-solid fa-stethoscope"></i>
-                <div>Diagnosa</div>
-            </a>
-        </li>
-
-        <li class="menu-item {{ request()->is('riwayat') ? 'active' : '' }}">
-            <a href="/riwayat" class="menu-link">
                 <i class="menu-icon fa-solid fa-clock-rotate-left"></i>
                 <div>Riwayat</div>
             </a>
@@ -64,16 +57,10 @@
                 <div>Penyakit</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('aturan-gejala') ? 'active' : '' }}">
-            <a href="/aturan-gejala" class="menu-link">
-                <i class="menu-icon fa-solid fa-book-medical"></i>
-                <div>Aturan Gejala</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->is('aturan-penyakit-lingkungan') ? 'active' : '' }}">
-            <a href="/aturan-penyakit-lingkungan" class="menu-link">
-                <i class="menu-icon fa-solid fa-book-dead"></i>
-                <div>Aturan Penyakit & Lingkungan</div>
+         <li class="menu-item {{ request()->is('data-set') ? 'active' : '' }}">
+            <a href="/data-set" class="menu-link">
+                <i class="menu-icon fa-solid fa-database"></i>
+                <div>Dataset Training</div>
             </a>
         </li>
     </ul>

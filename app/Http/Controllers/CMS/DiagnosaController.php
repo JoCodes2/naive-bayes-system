@@ -17,26 +17,16 @@ class DiagnosaController extends Controller
     {
         $this->diagnosaRepository = $diagnosaRepository;
     }
-
-    /**
-     * Get data master untuk form diagnosa
-     */
     public function getMasterData(): JsonResponse
     {
         return $this->diagnosaRepository->getMasterData();
     }
 
-    /**
-     * Proses diagnosa penyakit
-     */
     public function diagnosa(DiagnosaRequest $request): JsonResponse
     {
         return $this->diagnosaRepository->diagnosa($request);
     }
 
-    /**
-     * Get riwayat diagnosa
-     */
     public function getRiwayat(): JsonResponse
     {
         return $this->diagnosaRepository->getRiwayat();

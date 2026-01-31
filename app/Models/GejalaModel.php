@@ -15,15 +15,9 @@ class GejalaModel extends Model
     protected $fillable = [
         'id',
         'kode_gejala',
-        'deskripsi_gejala',
+        'nama_gejala',
         'kategori',
         'created_at',
         'updated_at'
     ];
-
-    public function aturanPenyakit()
-    {
-        return $this->hasMany(AturanGejalaModel::class, 'gejala_id');
-    }
-    
 }

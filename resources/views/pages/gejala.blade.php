@@ -52,10 +52,10 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="deskripsi_gejala">Deskripsi</label>
-            <textarea class="form-control" id="deskripsi_gejala" name="deskripsi_gejala"
+            <label for="nama_gejala">Deskripsi</label>
+            <textarea class="form-control" id="nama_gejala" name="nama_gejala"
                 placeholder="Masukkan deskripsi gejala"></textarea>
-            <small class="text-danger" id="deskripsi_gejala-error"></small>
+            <small class="text-danger" id="nama_gejala-error"></small>
         </div>
 
     </x-base-form>
