@@ -10,5 +10,5 @@ class KondisiLingkunganModel extends Model
 {
     use HasFactory, HasUuids;
     protected $table = 'kondisi_lingkungan';
-    protected $fillable = ['id', 'nama_parameter', 'satuan', 'nilai_label', 'min_value', 'max_value', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'nama_parameter', 'satuan', 'nilai_label', 'min_value', 'max_value', 'deskripsi', 'created_at', 'updated_at'];
 }

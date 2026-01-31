@@ -41,7 +41,7 @@ class ParameterRepositories implements ParameterInterfaces
             $data->nilai_label = $request->input('nilai_label');
             $data->min_value = $request->input('min_value');
             $data->max_value = $request->input('max_value');
-
+            $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {
@@ -60,6 +60,7 @@ class ParameterRepositories implements ParameterInterfaces
             $data->nilai_label = $request->input('nilai_label');
             $data->min_value = $request->input('min_value');
             $data->max_value = $request->input('max_value');
+            $data->deskripsi = $request->input('deskripsi');
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {

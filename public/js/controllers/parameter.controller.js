@@ -26,7 +26,7 @@ $(document).ready(function () {
         $('#formParameter').validate({
             rules: {
                 nama_parameter: { required: true },
-                satuan: { required: false },
+                satuan: { required: true },
                 nilai_label: { required: true },
                 min_value: { number: true, required: true },
                 max_value: {
@@ -43,7 +43,8 @@ $(document).ready(function () {
                     number: "Harus berupa angka",
                     required: 'Batas maksimal wajib diisi',
                     greaterThanMin: "Nilai maksimal harus lebih besar dari nilai minimal"
-                }
+                },
+                satuan: { required: "Satuan wajib diisi" },
             },
             highlight: function (element) {
                 $(element).addClass('is-invalid').removeClass('is-valid');

@@ -14,7 +14,7 @@
     >
         <div class="py-0">
             {{-- Table --}}
-            <x-base-table initId="parameterTable" :columns="['No', 'Nama Parameter', 'Satuan', 'Label (Kategori)', 'Min Value', 'Max Value', 'Aksi']">
+            <x-base-table initId="parameterTable" :columns="['No', 'Nama Parameter', 'Satuan', 'Label (Kategori)' ,'Deskripsi', 'Min Value', 'Max Value', 'Aksi']">
                 <tbody id="tBody">
                     {{-- Data diisi via AJAX --}}
                 </tbody>
@@ -35,20 +35,34 @@
 
         <div class="row">
             {{-- Nama Parameter --}}
-            <div class="col-md-8 form-group mb-3">
-                <label for="nama_parameter">Nama Parameter</label>
-                <input type="text" class="form-control" id="nama_parameter" name="nama_parameter"
-                    placeholder="Contoh: Suhu Udara, pH Tanah">
-                <small class="text-danger" id="nama_parameter-error"></small>
-            </div>
-
-            {{-- Satuan --}}
+          <div class="col-md-8 form-group mb-3">
+            <label for="nama_parameter">Nama Parameter</label>
+            <select class="form-control" id="nama_parameter" name="nama_parameter">
+                <option value="" disabled selected>-- Pilih Parameter --</option>
+                <option value="Suhu Udara">Suhu Udara</option>
+                <option value="Kelembapan Udara">Kelembapan Udara</option>
+                <option value="Kelembapan Tanah">Kelembapan Tanah</option>
+                <option value="Curah Hujan">Curah Hujan</option>
+                <option value="Intensitas Cahaya">Intensitas Cahaya</option>
+                <option value="Ph Tanah">Ph Tanah</option>
+            </select>
+            <small class="text-danger" id="nama_parameter-error"></small>
+        </div>
+                    {{-- Satuan --}}
             <div class="col-md-4 form-group mb-3">
                 <label for="satuan">Satuan</label>
                 <input type="text" class="form-control" id="satuan" name="satuan"
                     placeholder="°C, %, Lux">
                 <small class="text-danger" id="satuan-error"></small>
             </div>
+
+        </div>
+
+        {{-- Deskripsi --}}
+        <div class="form-group mb-3">
+            <label for="deskripsi">Deskripsi</label>
+            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"></textarea>
+            <small class="text-danger" id="deskripsi-error"></small>
         </div>
 
         {{-- Nilai Label (Diskritisasi) --}}

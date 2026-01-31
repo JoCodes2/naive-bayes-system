@@ -48,6 +48,7 @@ class parameterService {
                                 ${item.nilai_label.toUpperCase()}
                             </button>
                         </td>
+                         <td class="text-center">${item.deskripsi ?? '-'}</td>
                         <td class="text-center text-primary fw-bold">${item.min_value}</td>
                         <td class="text-center text-danger fw-bold">${item.max_value}</td>
                         <td class="text-center">
