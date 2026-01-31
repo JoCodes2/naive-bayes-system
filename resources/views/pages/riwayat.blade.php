@@ -16,10 +16,10 @@
             <x-base-table initId="riwayatTabel" :columns="[
                 'No',
                 'Tanggal',
+                'Nama Pengguna',
                 'Inputan (Lgk/Gjl)',
                 'Hasil Diagnosa',
                 'Kepercayaan',
-                'Aksi'
             ]">
                 <tbody>
                     {{-- Data akan diisi oleh riwayat.controller.js --}}
@@ -28,6 +28,7 @@
 
         </div>
     </x-base-body>
+
 @endsection
 @section('scripts')
     <script type="module" src="{{ asset('js/controllers/riwayat.controller.js')}}"></script>
